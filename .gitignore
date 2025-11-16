@@ -1,6 +1,7 @@
 # Firebase Configuration Keys (CRITICAL - DO NOT COMMIT)
 *firebase-adminsdk*.json
 project-*.json
+firebase-base64.txt
 
 # Node modules
 node_modules/
