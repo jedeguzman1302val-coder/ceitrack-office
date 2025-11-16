@@ -9,13 +9,25 @@ const fs = require('fs');
 const PDFDocument = require('pdfkit');
 
 // Initialize Firebase Admin with service account
-const serviceAccount = require('./project-6675709483481122019-firebase-adminsdk-yug2x-400507615f.json');
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    storageBucket: 'project-6675709483481122019.appspot.com'
-});
+let serviceAccount;
 
-// Initialize Firestore and make it globally available
+// Check if running on Render or production environment with FIREBASE_BASE64
+if (process.env.FIREBASE_BASE64) {
+    console.log('Loading Firebase credentials from FIREBASE_BASE64 environment variable');
+    // Decode base64-encoded Firebase credentials
+    const base64Credentials = process.env.FIREBASE_BASE64;
+    const jsonCredentials = Buffer.from(base64Credentials, 'base64').toString('utf8');
+    serviceAccount = JSON.parse(jsonCredentials);
+} else {
+    console.log('Loading Firebase credentials from local JSON file');
+    // Load from local file for development
+    serviceAccount = require('./project-6675709483481122019-firebase-adminsdk-yug2x-400507615f.json');
+}
+
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    storageBucket: 'project-6675709483481122019.appspot.com'
+});// Initialize Firestore and make it globally available
 const db = admin.firestore();
 global.admin = admin;  // Make admin globally available
 global.db = db;       // Make db globally available
@@ -39,7 +51,7 @@ app.use((req, res, next) => {
     }
     next();
 });
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Add security headers middleware
 app.use((req, res, next) => {
