@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track OJT Students</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Reuse dashboard sidebar/header styles -->
+    <link rel="stylesheet" href="../adviserdashboard/adviserdashboard.css">
+    <link rel="stylesheet" href="advisertrack.css">
+</head>
+<body>
+   
+   <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>CEITRACK</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="/adviserdashboard/adviserdashboard.html">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/adviserannouncement/adviserannouncement.html">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </a>
+            </li>
+            <li>
+                <a href="/adviserstudents/adviserstudents.html">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
+            </li>
+            <li>
+                <a href="/adviserchat/adviserchat.html">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="active">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Track Student</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content-wrapper">
+        <div class="header">
+            <div class="header-content">
+                <button class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-times"></i>
+                </button>
+                <h1 class="header-title">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Student Tracking
+                </h1>
+            </div>
+            <div class="user-profile">
+                 <img src="https://ui-avatars.com/api/?name=Adviser&background=4361ee&color=fff" alt="User">
+                 <div class="user-info">
+                     <span class="user-name">Adviser Name</span>
+                     <span class="user-meta">DICT • 4A</span>
+                 </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="tracking-layout">
+                <div class="student-list-panel">
+                    <div class="panel-header">
+                        <h3>My Students</h3>
+                    </div>
+                    <ul class="student-list">
+                        <li id="students-loading" style="padding:12px;color:#6b7280;">Loading students...</li>
+                    </ul>
+                </div>
+
+                <div class="map-panel">
+                    <div class="map-legend-panel">
+                        <span class="legend-item"><span class="legend-icon legend-student"></span> Student</span>
+                        <span class="legend-item"><span class="legend-icon legend-company"></span> Company</span>
+                    </div>
+                    <div class="map-placeholder">
+                        <!-- Map container (MapTiler) -->
+                        <div id="map" style="width:100%;height:100%;position:relative;"></div>
+                        <div id="map-message">Select a student to view location.</div>
+                        <div id="map-pin" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="advisertrack.js"></script>
+</body>
+</html>

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Students</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="adviserstudents.css"> 
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>CEITRACK</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/adviserdashboard/adviserdashboard.html"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+            <li><a href="/adviserannouncement/adviserannouncement.html"><i class="fas fa-bullhorn"></i><span>Announcements</span></a></li>
+            <li><a href="#" class="active"><i class="fas fa-users"></i><span>Students</span></a></li>
+            <li><a href="/adviserchat/adviserchat.html"><i class="fas fa-comments"></i><span>Chat</span></a></li>
+            <li><a href="/advisertrack/advisertrack.html"><i class="fas fa-map-marker-alt"></i><span>Track Student</span></a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+        </ul>
+    </div>
+
+    <div class="main-content-wrapper">
+        <div class="header">
+            <div class="header-content">
+                <button type="button" class="sidebar-toggle" aria-controls="sidebar" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-times"></i>
+                </button>
+                <h1 class="header-title"><i class="fas fa-user-check"></i> Student Progress</h1>
+            </div>
+            <div class="user-profile">
+                <div class="header-actions" style="margin-right: 15px; display: flex; gap: 10px;">
+                    <button id="notification-icon-btn" class="header-icon-btn" title="Notifications" style="background: none; border: none; font-size: 18px; cursor: pointer;">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <img src="https://ui-avatars.com/api/?name=Adviser&background=4361ee&color=fff" alt="User" id="adviser-avatar">
+                <div class="user-info">
+                    <span class="user-name" id="adviser-name">Loading...</span>
+                    <span class="user-meta" id="adviser-meta" style="font-size:12px;color:#6b7280;margin-top:3px;display:block;">&nbsp;</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>Student Document Tracking</h3>
+                    <div class="search-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-input" placeholder="Search student...">
+                    </div>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Student Info</th>
+                            <th>Company</th>
+                            <th>OJT Hours</th>
+                            <th>Document Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="students-table-body">
+                        <tr><td colspan="5" style="text-align: center; padding: 20px;">Loading student data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="view-modal" class="modal-container" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-student-info-header">
+                    <img id="modal-student-avatar" src="https://via.placeholder.com/48" alt="Student Avatar" class="modal-avatar">
+                    <div>
+                        <h2 id="modal-student-name">Student Name</h2>
+                        <p id="modal-student-id">Student Number</p>
+                    </div>
+                </div>
+                <button id="modal-close-btn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3>Submitted Documents</h3>
+                   <ul id="documents-list" class="documents-list">
+    <li>
+        <i class="fas fa-file-alt doc-icon"></i>
+        <span>CERTIFICATE OF REGISTRATION</span>
+        <button class="action-btn view-doc-btn" title="View Document"><i class="fas fa-eye"></i></button>
+        <span class="status-pill pending">Pending</span>
+    </li>
+    <li>
+        <i class="fas fa-file-signature doc-icon"></i>
+        <span>ACCEPTANCE LETTER</span>
+        <button class="action-btn view-doc-btn" title="Document is missing" disabled><i class="fas fa-eye-slash"></i></button>
+        <span class="status-pill incomplete">Missing</span>
+    </li>
+    <li>
+        <i class="fas fa-file-contract doc-icon"></i>
+        <span>MEMORANDUM OF AGREEMENT</span>
+        <button class="action-btn view-doc-btn" title="View Document"><i class="fas fa-eye"></i></button>
+        <span class="status-pill complete">Approved</span>
+    </li>
+    <li>
+        <i class="fas fa-file-shield-alt doc-icon"></i>
+        <span>WAIVER</span>
+        <button class="action-btn view-doc-btn" title="View Document"><i class="fas fa-eye"></i></button>
+        <span class="status-pill pending">Pending</span>
+    </li>
+    <li>
+        <i class="fas fa-file-medical doc-icon"></i>
+        <span>MEDICAL CERTIFICATE</span>
+        <button class="action-btn view-doc-btn" title="View Document"><i class="fas fa-eye"></i></button>
+        <span class="status-pill complete">Approved</span>
+    </li>
+    <li>
+        <i class="fas fa-map-marked-alt doc-icon"></i>
+        <span>VICINITY MAP</span>
+        <button class="action-btn view-doc-btn" title="Document is missing" disabled><i class="fas fa-eye-slash"></i></button>
+        <span class="status-pill incomplete">Missing</span>
+    </li>
+    <li>
+        <i class="fas fa-file-invoice doc-icon"></i>
+        <span>RECOMMENDATION LETTER</span>
+        <button class="action-btn view-doc-btn" title="View Document"><i class="fas fa-eye"></i></button>
+        <span class="status-pill complete">Approved</span>
+    </li>
+    <li>
+        <i class="fas fa-file-pen doc-icon"></i>
+        <span>OATH OF UNDERTAKING</span>
+        <button class="action-btn view-doc-btn" title="View Document"><i class="fas fa-eye"></i></button>
+        <span class="status-pill pending">Pending</span>
+    </li>
+</ul>
+                </div>
+                <div class="modal-section">
+                    <h3>Company Information</h3>
+                    <div class="company-info-wrapper">
+                        <div class="company-logo-container">
+                            <img id="modal-company-logo" src="https://via.placeholder.com/100" alt="Company Logo">
+                        </div>
+                        <div class="company-details-grid">
+                            <div class="detail-item"><strong>COMPANY NAME:</strong><span id="modal-company-name">Company Name Placeholder</span></div>
+                            <div class="detail-item"><strong>SUPERVISOR:</strong><span id="modal-supervisor-name">Supervisor Name Placeholder</span></div>
+                            <div class="detail-item full-width"><strong>ADDRESS:</strong><span id="modal-company-address">Company Address Placeholder</span></div>
+                            <div class="detail-item"><strong>HR CONTACT:</strong><span id="modal-hr-name">HR Name Placeholder</span></div>
+                            <div class="detail-item"><strong>COMPANY EMAIL:</strong><span id="modal-company-email">email@company.com</span></div>
+                            <div class="detail-item"><strong>LANDLINE:</strong><span id="modal-company-landline">(02) 8888-8888</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="view-dtr-btn" class="action-btn primary"><i class="fas fa-calendar-alt"></i> View DTR</button>
+                <button id="view-weekly-report-btn" class="action-btn weekly" style="margin-left:8px;"><i class="fas fa-file-alt"></i> View Weekly Report</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="dtr-modal" class="modal-container" style="display: none;">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <div>
+                    <h2 id="dtr-modal-student-name">Student Name's DTR</h2>
+                    <p id="dtr-modal-subtitle">Daily Time Records</p>
+                </div>
+                <button id="dtr-modal-close-btn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                        <i class="fas fa-filter" style="color: white; font-size: 18px;"></i>
+                        <h4 style="margin: 0; color: white; font-size: 16px; font-weight: 600;">Filter DTR Records</h4>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end;">
+                        <div>
+                            <label style="display: block; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 8px;">
+                                <i class="fas fa-calendar-day" style="margin-right: 6px;"></i>From Date
+                            </label>
+                            <input type="date" id="dtr-date-from" style="width: 100%; padding: 10px 14px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.95); border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.3s;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 8px;">
+                                <i class="fas fa-calendar-day" style="margin-right: 6px;"></i>To Date
+                            </label>
+                            <input type="date" id="dtr-date-to" style="width: 100%; padding: 10px 14px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.95); border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.3s;">
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="dtr-filter-btn" style="padding: 10px 20px; background: white; color: #667eea; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
+                                <i class="fas fa-search"></i> Apply
+                            </button>
+                            <button id="dtr-reset-btn" style="padding: 10px 18px; background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; white-space: nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.borderColor='rgba(255,255,255,0.6)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.borderColor='rgba(255,255,255,0.4)'">
+                                <i class="fas fa-redo-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="dtr-records-container" style="overflow: visible;">
+                    <p style="text-align: center; padding: 20px; color: #6b7280;">Loading DTR records...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+ <div id="doc-viewer-modal" class="modal-container">
+    <div class="modal-content viewer">
+        <div class="modal-header">
+            <div>
+                <h2 id="doc-viewer-title">Document Title</h2>
+            </div>
+            <button id="doc-viewer-close-btn" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body viewer-body">
+            <div id="doc-viewer-content">
+                <p>Loading document...</p>
+            </div>
+        </div>
+        </div>
+</div>
+
+    <div id="weekly-report-modal" class="modal-container" style="display: none;">
+        <div class="modal-content" style="max-width: 1000px;">
+            <div class="modal-header">
+                <div>
+                    <h2 id="weekly-report-student-name">Student Name's Weekly Activities</h2>
+                    <p id="weekly-report-subtitle">Activity Reports</p>
+                </div>
+                <button id="weekly-report-close-btn" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 20px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                        <i class="fas fa-filter" style="color: white; font-size: 18px;"></i>
+                        <h4 style="margin: 0; color: white; font-size: 16px; font-weight: 600;">Filter Activities</h4>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end;">
+                        <div>
+                            <label style="display: block; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 8px;">
+                                <i class="fas fa-calendar-day" style="margin-right: 6px;"></i>From Date
+                            </label>
+                            <input type="date" id="weekly-date-from" style="width: 100%; padding: 10px 14px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.95); border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.3s;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.95); margin-bottom: 8px;">
+                                <i class="fas fa-calendar-day" style="margin-right: 6px;"></i>To Date
+                            </label>
+                            <input type="date" id="weekly-date-to" style="width: 100%; padding: 10px 14px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.95); border-radius: 8px; font-size: 14px; font-weight: 500; transition: all 0.3s;">
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="weekly-filter-btn" style="padding: 10px 20px; background: white; color: #10b981; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); white-space: nowrap;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0,0,0,0.1)'">
+                                <i class="fas fa-search"></i> Apply
+                            </button>
+                            <button id="weekly-reset-btn" style="padding: 10px 18px; background: rgba(255,255,255,0.2); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; white-space: nowrap;" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.borderColor='rgba(255,255,255,0.6)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.borderColor='rgba(255,255,255,0.4)'">
+                                <i class="fas fa-redo-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="weekly-activities-container">
+                    <p style="text-align: center; padding: 20px; color: #6b7280;">Loading activities...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script>
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyCeTfbcz9-lqT0JTMO8JVTWV-luBhT8kO0",
+        authDomain: "project-6675709483481122019.firebaseapp.com",
+        databaseURL: "https://project-6675709483481122019-default-rtdb.firebaseio.com",
+        projectId: "project-6675709483481122019",
+        storageBucket: "project-6675709483481122019.appspot.com",
+        messagingSenderId: "305985446601",
+        appId: "1:305985446601:web:914f344ff38ac5b177e318"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+</script>
+<script src="adviserstudents.js"></script>
+</body>
+</html>

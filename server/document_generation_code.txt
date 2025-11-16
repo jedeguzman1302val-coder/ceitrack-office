@@ -1,0 +1,470 @@
+// ============================================================================
+// PASTE THIS CODE INTO server.js AFTER LINE 90 (after the company logo endpoint)
+// BEFORE "// Endpoint to get adviser's students count"
+// ============================================================================
+
+// ============================================================================
+// DOCUMENT GENERATION FUNCTIONS
+// ============================================================================
+
+// Helper function to add header to PDF
+function addHeader(doc, title) {
+    doc.fontSize(20)
+       .font('Helvetica-Bold')
+       .text(title, { align: 'center' })
+       .moveDown(0.5);
+    
+    doc.fontSize(10)
+       .font('Helvetica')
+       .text('College of Engineering and Information Technology', { align: 'center' })
+       .text('Technical Education and Skills Development Authority', { align: 'center' })
+       .moveDown(2);
+}
+
+// Helper function to add footer
+function addFooter(doc, pageNumber) {
+    const bottomMargin = 50;
+    doc.fontSize(8)
+       .font('Helvetica')
+       .text(
+           `Page ${pageNumber} | Generated on ${new Date().toLocaleDateString('en-US', { 
+               year: 'numeric', 
+               month: 'long', 
+               day: 'numeric' 
+           })}`,
+           50,
+           doc.page.height - bottomMargin,
+           { align: 'center', width: doc.page.width - 100 }
+       );
+}
+
+// Generate MOA (Memorandum of Agreement)
+function generateMOA(studentData, outputPath) {
+    return new Promise((resolve, reject) => {
+        const doc = new PDFDocument({ margin: 50 });
+        const stream = fs.createWriteStream(outputPath);
+
+        doc.pipe(stream);
+
+        // Header
+        addHeader(doc, 'MEMORANDUM OF AGREEMENT');
+
+        // Introduction
+        doc.fontSize(12)
+           .font('Helvetica')
+           .text('This Memorandum of Agreement (MOA) is entered into on this ', { continued: true })
+           .font('Helvetica-Bold')
+           .text(new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), { continued: true })
+           .font('Helvetica')
+           .text(' by and between:')
+           .moveDown();
+
+        // First Party
+        doc.fontSize(12)
+           .font('Helvetica-Bold')
+           .text('FIRST PARTY:', { underline: true })
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text('College of Engineering and Information Technology (CEIT)')
+           .text('Technical Education and Skills Development Authority')
+           .text('Metro Manila, Philippines')
+           .moveDown(0.5)
+           .text('Represented by: ', { continued: true })
+           .font('Helvetica-Bold')
+           .text('Dr. Chairperson Name')
+           .font('Helvetica')
+           .text('Chairperson, CEIT Department')
+           .moveDown();
+
+        // Second Party
+        doc.font('Helvetica-Bold')
+           .text('SECOND PARTY:', { underline: true })
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text(studentData.companyName || 'N/A')
+           .text(studentData.companyAddress || 'N/A')
+           .moveDown(0.5)
+           .text('Represented by: ', { continued: true })
+           .font('Helvetica-Bold')
+           .text(studentData.companyRepresentative || 'N/A')
+           .font('Helvetica')
+           .text(studentData.companyDesignation || 'N/A')
+           .moveDown();
+
+        // Purpose
+        doc.font('Helvetica-Bold')
+           .text('PURPOSE:', { underline: true })
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text(`This agreement is for the On-the-Job Training (OJT) placement of ${studentData.name || 'Student'}, ` +
+                 `Student Number: ${studentData.id || 'N/A'}, enrolled in ${studentData.course || 'N/A'} program, ` +
+                 `Section ${studentData.section || 'N/A'}.`)
+           .moveDown();
+
+        // Terms and Conditions
+        doc.font('Helvetica-Bold')
+           .text('TERMS AND CONDITIONS:', { underline: true })
+           .moveDown(0.3);
+
+        const terms = [
+            'The training period shall be for a minimum of 486 hours as required by the curriculum.',
+            'The company shall provide proper supervision and guidance to the trainee.',
+            'The institution shall monitor the progress of the trainee through designated faculty advisers.',
+            'The trainee shall comply with all company rules, regulations, and policies.',
+            'The company shall evaluate the trainee\'s performance based on agreed criteria.',
+            'Both parties shall maintain confidentiality of sensitive information.',
+            'This agreement may be terminated by either party with prior written notice.'
+        ];
+
+        terms.forEach((term, index) => {
+            doc.font('Helvetica')
+               .text(`${index + 1}. ${term}`)
+               .moveDown(0.3);
+        });
+
+        doc.moveDown();
+
+        // Signatures
+        doc.font('Helvetica-Bold')
+           .text('AGREED AND ACCEPTED BY:', { underline: true })
+           .moveDown(2);
+
+        doc.font('Helvetica')
+           .text('_____________________________', 100, doc.y)
+           .text('_____________________________', 350, doc.y - 12)
+           .moveDown(0.3);
+
+        doc.font('Helvetica-Bold')
+           .text('Dr. Chairperson Name', 100, doc.y)
+           .text(studentData.companyRepresentative || 'Company Representative', 350, doc.y - 12)
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text('Chairperson, CEIT', 100, doc.y)
+           .text(studentData.companyDesignation || 'Designation', 350, doc.y - 12)
+           .moveDown(0.3);
+
+        doc.text('First Party', 100, doc.y)
+           .text('Second Party', 350, doc.y - 12);
+
+        // Footer
+        addFooter(doc, 1);
+
+        doc.end();
+
+        stream.on('finish', () => resolve(outputPath));
+        stream.on('error', reject);
+    });
+}
+
+// Generate Waiver
+function generateWaiver(studentData, outputPath) {
+    return new Promise((resolve, reject) => {
+        const doc = new PDFDocument({ margin: 50 });
+        const stream = fs.createWriteStream(outputPath);
+
+        doc.pipe(stream);
+
+        // Header
+        addHeader(doc, 'WAIVER AND RELEASE OF LIABILITY');
+
+        // Content
+        doc.fontSize(12)
+           .font('Helvetica')
+           .text('I, ', { continued: true })
+           .font('Helvetica-Bold')
+           .text(studentData.name || 'Student Name', { continued: true })
+           .font('Helvetica')
+           .text(', Student Number: ', { continued: true })
+           .font('Helvetica-Bold')
+           .text(studentData.id || 'N/A', { continued: true })
+           .font('Helvetica')
+           .text(', enrolled in ')
+           .text(`${studentData.course || 'N/A'} program, Section ${studentData.section || 'N/A'}, hereby acknowledge and agree to the following:`)
+           .moveDown();
+
+        // Waiver Points
+        doc.font('Helvetica-Bold')
+           .text('1. VOLUNTARY PARTICIPATION', { underline: true })
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text(`I voluntarily choose to undergo my On-the-Job Training (OJT) at ${studentData.companyName || 'Company'}, ` +
+                 `located at ${studentData.companyAddress || 'Company Address'}.`)
+           .moveDown();
+
+        doc.font('Helvetica-Bold')
+           .text('2. ASSUMPTION OF RISK', { underline: true })
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text('I understand that the OJT program may involve certain risks including, but not limited to, ' +
+                 'physical injury, property damage, or other potential hazards. I voluntarily assume all such risks.')
+           .moveDown();
+
+        doc.font('Helvetica-Bold')
+           .text('3. RELEASE OF LIABILITY', { underline: true })
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text('I hereby release, waive, and discharge the College of Engineering and Information Technology (CEIT), ' +
+                 'its officers, employees, and agents from any and all liability, claims, demands, or causes of action ' +
+                 'that I may have for any injury, loss, or damage arising out of my participation in the OJT program.')
+           .moveDown();
+
+        doc.font('Helvetica-Bold')
+           .text('4. MEDICAL TREATMENT', { underline: true })
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text('I authorize the company and/or CEIT to secure medical treatment for me in case of emergency.')
+           .moveDown();
+
+        doc.font('Helvetica-Bold')
+           .text('5. COMPLIANCE', { underline: true })
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text('I agree to comply with all rules, regulations, and policies of the company and CEIT during my training period.')
+           .moveDown();
+
+        doc.font('Helvetica-Bold')
+           .text('6. INSURANCE', { underline: true })
+           .moveDown(0.3);
+
+        doc.font('Helvetica')
+           .text('I understand that I am responsible for securing my own health and accident insurance coverage.')
+           .moveDown(2);
+
+        // Acknowledgment
+        doc.font('Helvetica')
+           .text('I have read this waiver and fully understand its contents. I voluntarily agree to its terms and conditions.')
+           .moveDown(3);
+
+        // Student Signature
+        doc.text('_____________________________', 100, doc.y)
+           .moveDown(0.3)
+           .font('Helvetica-Bold')
+           .text(studentData.name || 'Student Name', 100, doc.y)
+           .moveDown(0.3)
+           .font('Helvetica')
+           .text('Student Signature', 100, doc.y)
+           .moveDown(0.3)
+           .text(`Date: ${new Date().toLocaleDateString('en-US')}`, 100, doc.y)
+           .moveDown(2);
+
+        // Parent/Guardian Signature (if student is minor)
+        doc.text('_____________________________', 100, doc.y)
+           .moveDown(0.3)
+           .font('Helvetica-Bold')
+           .text('Parent/Guardian Name', 100, doc.y)
+           .moveDown(0.3)
+           .font('Helvetica')
+           .text('Parent/Guardian Signature (if applicable)', 100, doc.y)
+           .moveDown(0.3)
+           .text(`Date: ${new Date().toLocaleDateString('en-US')}`, 100, doc.y);
+
+        // Footer
+        addFooter(doc, 1);
+
+        doc.end();
+
+        stream.on('finish', () => resolve(outputPath));
+        stream.on('error', reject);
+    });
+}
+
+// Generate Recommendation Letter
+function generateRecommendationLetter(studentData, outputPath) {
+    return new Promise((resolve, reject) => {
+        const doc = new PDFDocument({ margin: 50 });
+        const stream = fs.createWriteStream(outputPath);
+
+        doc.pipe(stream);
+
+        // Header
+        doc.fontSize(10)
+           .font('Helvetica')
+           .text('College of Engineering and Information Technology', { align: 'right' })
+           .text('Technical Education and Skills Development Authority', { align: 'right' })
+           .text('Metro Manila, Philippines', { align: 'right' })
+           .text(`Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, { align: 'right' })
+           .moveDown(2);
+
+        // Recipient
+        doc.font('Helvetica')
+           .text(studentData.companyRepresentative || 'Dear Sir/Madam')
+           .text(studentData.companyDesignation || '')
+           .text(studentData.companyName || '')
+           .text(studentData.companyAddress || '')
+           .moveDown(2);
+
+        // Salutation
+        doc.text(`Dear ${studentData.companyRepresentative || 'Sir/Madam'}:`)
+           .moveDown();
+
+        // Subject
+        doc.font('Helvetica-Bold')
+           .text('Re: Recommendation for On-the-Job Training (OJT)', { underline: true })
+           .moveDown();
+
+        // Body
+        doc.font('Helvetica')
+           .text('Greetings!')
+           .moveDown();
+
+        doc.text('We are pleased to recommend ', { continued: true })
+           .font('Helvetica-Bold')
+           .text(studentData.name || 'Student Name', { continued: true })
+           .font('Helvetica')
+           .text(', Student Number: ', { continued: true })
+           .font('Helvetica-Bold')
+           .text(studentData.id || 'N/A', { continued: true })
+           .font('Helvetica')
+           .text(', for the ')
+           .text(`On-the-Job Training program at your esteemed company. ${studentData.name || 'The student'} is currently ` +
+                 `enrolled in our ${studentData.course || 'N/A'} program, Section ${studentData.section || 'N/A'}, and has ` +
+                 'demonstrated excellent academic performance and professional potential.')
+           .moveDown();
+
+        doc.text('As part of the curriculum requirements, our students are required to complete a minimum of 486 hours ' +
+                 'of practical training in a real-world work environment. We believe that your company provides an ideal ' +
+                 'setting for our students to apply their theoretical knowledge and develop essential workplace skills.')
+           .moveDown();
+
+        doc.text(`${studentData.name || 'The student'} has shown strong commitment to learning and has consistently displayed ` +
+                 'qualities of professionalism, reliability, and eagerness to contribute. We are confident that they will ' +
+                 'be a valuable asset to your organization during the training period.')
+           .moveDown();
+
+        doc.text('The training program is expected to run for the duration required by our curriculum, and we will provide ' +
+                 'continuous support and monitoring through our faculty advisers. We will also conduct regular evaluations ' +
+                 'to ensure the training objectives are met.')
+           .moveDown();
+
+        doc.text('Should you require any additional information about our student or the OJT program, please do not hesitate ' +
+                 'to contact us.')
+           .moveDown();
+
+        doc.text('Thank you for considering our student for this opportunity. We look forward to a mutually beneficial partnership.')
+           .moveDown(2);
+
+        // Closing
+        doc.text('Respectfully yours,')
+           .moveDown(3);
+
+        doc.text('_____________________________')
+           .moveDown(0.3)
+           .font('Helvetica-Bold')
+           .text('Dr. Chairperson Name')
+           .font('Helvetica')
+           .text('Chairperson, CEIT Department')
+           .text('College of Engineering and Information Technology');
+
+        // Footer
+        addFooter(doc, 1);
+
+        doc.end();
+
+        stream.on('finish', () => resolve(outputPath));
+        stream.on('error', reject);
+    });
+}
+
+// ============================================================================
+// DOCUMENT GENERATION ENDPOINT
+// ============================================================================
+
+app.post('/api/generate-document', async (req, res) => {
+    try {
+        const { studentData, docType } = req.body;
+
+        if (!studentData || !docType) {
+            return res.status(400).json({ error: 'Student data and document type are required' });
+        }
+
+        // Create documents directory if it doesn't exist
+        const docsDir = path.join(__dirname, 'generated_documents');
+        if (!fs.existsSync(docsDir)) {
+            fs.mkdirSync(docsDir, { recursive: true });
+        }
+
+        // Generate filename
+        const timestamp = Date.now();
+        const filename = `${docType}_${studentData.id}_${timestamp}.pdf`;
+        const outputPath = path.join(docsDir, filename);
+
+        // Generate the appropriate document
+        let generatedPath;
+        switch (docType.toLowerCase()) {
+            case 'moa':
+                generatedPath = await generateMOA(studentData, outputPath);
+                break;
+            case 'waiver':
+                generatedPath = await generateWaiver(studentData, outputPath);
+                break;
+            case 'recommendation':
+            case 'recommendation_letter':
+                generatedPath = await generateRecommendationLetter(studentData, outputPath);
+                break;
+            default:
+                return res.status(400).json({ error: 'Invalid document type' });
+        }
+
+        // Upload to Firebase Storage
+        const bucket = admin.storage().bucket();
+        const destination = `secretary_documents/${studentData.id}/${filename}`;
+        
+        await bucket.upload(generatedPath, {
+            destination: destination,
+            metadata: {
+                contentType: 'application/pdf',
+                metadata: {
+                    studentId: studentData.id,
+                    studentName: studentData.name,
+                    documentType: docType,
+                    generatedAt: new Date().toISOString()
+                }
+            }
+        });
+
+        // Get download URL
+        const file = bucket.file(destination);
+        const [url] = await file.getSignedUrl({
+            action: 'read',
+            expires: '03-01-2500' // Far future date
+        });
+
+        // Clean up local file
+        fs.unlinkSync(generatedPath);
+
+        // Store document record in Firestore
+        await db.collection('generatedDocuments').add({
+            studentId: studentData.id,
+            studentName: studentData.name,
+            documentType: docType,
+            fileName: filename,
+            filePath: destination,
+            downloadUrl: url,
+            generatedAt: admin.firestore.FieldValue.serverTimestamp(),
+            generatedBy: 'secretary'
+        });
+
+        res.json({
+            success: true,
+            message: `${docType.toUpperCase()} generated successfully`,
+            filename: filename,
+            downloadUrl: url
+        });
+
+    } catch (error) {
+        console.error('Error generating document:', error);
+        res.status(500).json({ 
+            error: 'Failed to generate document',
+            details: error.message 
+        });
+    }
+});

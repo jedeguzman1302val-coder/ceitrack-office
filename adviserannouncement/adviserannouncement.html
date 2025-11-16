@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJT Adviser Announcements</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="adviserannouncement.css"> </head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>CEITRACK</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="/adviserdashboard/adviserdashboard.html">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="active">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </a>
+            </li>
+            <li>
+                <a href="/adviserstudents/adviserstudents.html">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
+            </li>
+            <li>
+                <a href="/adviserchat/adviserchat.html">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat</span>
+                </a>
+            </li>
+            <li>
+                <a href="/advisertrack/advisertrack.html">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Track Student</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content-wrapper">
+        <div class="header">
+            <div class="header-content">
+                <button class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-times"></i>
+                </button>
+                <h1 class="header-title">
+                    <i class="fas fa-bullhorn"></i>
+                    Announcements
+                </h1>
+            </div>
+            <div class="user-profile">
+                 <div class="header-actions" style="margin-right: 15px; display: flex; gap: 10px;">
+                    <button id="notification-icon-btn" class="header-icon-btn" title="Notifications" style="background: none; border: none; font-size: 18px; cursor: pointer;">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <img src="https://ui-avatars.com/api/?name=Adviser&background=4361ee&color=fff" alt="User" id="adviser-avatar">
+                <div class="user-info">
+                    <span class="user-name" id="adviser-name">Loading...</span>
+                    <span class="user-meta" id="adviser-meta" style="font-size:12px;color:#6b7280;margin-top:3px;display:block;">&nbsp;</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="announcement-header">
+                <h2>Manage Announcements</h2>
+                <button class="create-announcement-btn">
+                    <i class="fas fa-plus"></i> Create Announcement
+                </button>
+            </div>
+            
+            <div class="announcement-list-container">
+                <div class="announcement-placeholder">
+                    <i class="fas fa-folder-open"></i>
+                    <p>No announcements posted yet.</p>
+                    <span>Click "Create Announcement" to get started.</span>
+                </div>
+            </div>
+            
+            
+            <!-- Create Announcement Modal -->
+            <div id="create-announcement-modal" class="modal" aria-hidden="true">
+                <div class="modal-backdrop" data-close-modal></div>
+                <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+                    <header class="modal-header">
+                        <h3 id="modal-title">Create Announcement</h3>
+                        <button class="modal-close" data-close-modal aria-label="Close">&times;</button>
+                    </header>
+                    <div class="modal-body">
+                        <label for="announcement-title">Title</label>
+                        <input id="announcement-title" type="text" placeholder="Enter announcement title" />
+
+                        <label for="announcement-content" style="margin-top:12px; display:block;">Content</label>
+                        <div class="rte-toolbar" role="toolbar" aria-label="Editor toolbar">
+                            <button data-cmd="bold" title="Bold"><i class="fas fa-bold"></i></button>
+                            <button data-cmd="italic" title="Italic"><i class="fas fa-italic"></i></button>
+                            <button data-cmd="underline" title="Underline"><i class="fas fa-underline"></i></button>
+                            <button data-cmd="insertUnorderedList" title="Bullet list"><i class="fas fa-list-ul"></i></button>
+                            <button data-cmd="insertOrderedList" title="Numbered list"><i class="fas fa-list-ol"></i></button>
+                            <button data-cmd="createLink" title="Insert link"><i class="fas fa-link"></i></button>
+                        </div>
+                        <div id="announcement-content" class="rte" contenteditable="true" role="textbox" aria-multiline="true" placeholder="Write announcement content here..."></div>
+                        
+                        <label for="announcement-images" style="margin-top:16px; display:block;">Add Images (Optional)</label>
+                        <div class="image-upload-section">
+                            <input type="file" id="announcement-images" accept="image/*" multiple style="display: none;">
+                            <button type="button" class="btn-upload-images" onclick="document.getElementById('announcement-images').click()">
+                                <i class="fas fa-images"></i> Choose Images
+                            </button>
+                            <div id="image-preview-grid" class="image-preview-grid"></div>
+                        </div>
+                    </div>
+                    <footer class="modal-footer">
+                        <button id="cancel-announcement" class="btn-secondary" data-close-modal>Cancel</button>
+                        <button id="save-announcement" class="btn-primary">Save Announcement</button>
+                    </footer>
+                </div>
+            </div>
+            <!-- Link modal -->
+            <div id="link-modal" class="modal" aria-hidden="true">
+                <div class="modal-backdrop" data-close-modal></div>
+                <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="link-modal-title">
+                    <header class="modal-header">
+                        <h3 id="link-modal-title">Insert Link</h3>
+                        <button class="modal-close" data-close-modal aria-label="Close">&times;</button>
+                    </header>
+                    <div class="modal-body">
+                        <label for="link-url">URL</label>
+                        <input id="link-url" type="text" placeholder="https://example.com" />
+                        <label for="link-text" style="margin-top:8px; display:block;">Text (optional)</label>
+                        <input id="link-text" type="text" placeholder="Link text (leave empty to use URL)" />
+                    </div>
+                    <footer class="modal-footer">
+                        <button class="btn-secondary" data-close-modal>Cancel</button>
+                        <button id="insert-link-btn" class="btn-primary">Insert Link</button>
+                    </footer>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeTfbcz9-lqT0JTMO8JVTWV-luBhT8kO0",
+            authDomain: "project-6675709483481122019.firebaseapp.com",
+            databaseURL: "https://project-6675709483481122019-default-rtdb.firebaseio.com",
+            projectId: "project-6675709483481122019",
+            storageBucket: "project-6675709483481122019.appspot.com",
+            messagingSenderId: "305985446601",
+            appId: "1:305985446601:web:914f344ff38ac5b177e318"
+        };
+
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+    </script>
+    <script src="adviserannouncement.js"></script>
+</body>
+</html>

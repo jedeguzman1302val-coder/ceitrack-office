@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Documents</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="chairpersondocuments.css">
+    <link rel="stylesheet" href="requirement-modal.css">
+    <link href="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro/build/vanilla-calendar.min.css" rel="stylesheet">
+     
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>CEITRACK</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="/chairpersondashboard/chairdash.html">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairannouncement/chairannounce.html">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairpersonaddstudent/addStudent.html">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Student</span>
+                </a>
+            </li>
+             <li>
+                <a href="/chairpersonaddadviser/addAdviser.html">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Add Adviser</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairpersondocument/chairpersondocuments.html" class="active">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Student Documents</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairpersonstudentstatus/chairpersonstudentstatus.html">
+                    <i class="fas fa-users"></i>
+                    <span>Student Status</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairpersonstudenthte/studenthte.html">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Student HTE</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chatchairperson/chatchair.html">
+                    <i class="fas fa-comments"></i>
+                    <span>Message</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <button class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-times"></i>
+                </button>
+                <h1 class="header-title">
+                    <i class="fas fa-file-alt"></i>
+                    OJT Student Requirements
+                </h1>
+            </div>
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Chair+Person&background=3f37c9&color=fff" alt="User">
+                <div class="user-info">
+                    <span class="user-name" id="header-username">Chairperson</span>
+                    <span class="user-role">Department <span id="chairdepartment"></span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            
+                <!-- Student List Panel -->
+                <div class="students-container">
+                    <div class="student-list-header">
+                        <div class="search-container">
+                            <div class="search-filter-wrapper">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" id="studentSearch" placeholder="Search students..." oninput="filterStudents()">
+                                </div>
+                                <div class="filter-dropdown-wrapper">
+                                    <i class="fas fa-layer-group"></i>
+                                    <select id="sectionFilter" class="section-filter-dropdown" onchange="filterBySection(this.value)">
+                                        <option value="all">All Sections</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="student-list-wrapper">
+                        <ul class="student-list" id="studentList"></ul>
+                    </div>
+                </div>
+                
+                <!-- Requirements Panel -->
+                <div class="requirements-panel">
+                    <div id="displayArea">
+                        <div class="empty-state" style="text-align: center; padding: 40px 20px;">
+                            <i class="fas fa-folder-open" style="font-size: 2rem; color: #94a3b8; margin-bottom: 16px;"></i>
+                            <p style="color: #64748b; font-size: 0.875rem;">Select a student to view requirements</p>
+                        </div>
+                    </div>
+                    <div id="requirements-grid" class="requirements-grid"></div>
+                </div>
+            
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro/index.js"></script>
+    <!-- Modal for viewing requirement details -->
+    <div id="requirementModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <h3 id="requirementTitle" class="modal-title"></h3>
+                <div class="submission-date">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span id="submittedDate"></span>
+                </div>
+            </div>
+            <div class="requirement-details">
+                <div class="section-container">
+                    <div class="section-label">Description:</div>
+                    <div class="requirement-description" id="requirementDescription"></div>
+                </div>
+                <div class="requirement-image-container">
+                    <img id="requirementImage" alt="Requirement Document">
+                </div>
+                <div class="requirement-actions">
+                    <div class="feedback-section">
+                        <label for="feedbackText">Feedback:</label>
+                        <textarea id="feedbackText" rows="3" placeholder="Enter feedback for the student..."></textarea>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="approve-btn" onclick="updateStatus('approved')">Approve</button>
+                        <button class="reject-btn" onclick="updateStatus('rejected')">Reject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="chairpersondocuments.js"></script>
+</body>
+</html>

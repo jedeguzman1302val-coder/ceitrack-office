@@ -1,0 +1,420 @@
+/* --- COPY OF YOUR ORIGINAL CSS FOR CONSISTENCY --- */
+        :root {
+            --primary-color: #4A90E2; /* A clean, professional blue */
+            --secondary-color: #50E3C2; /* A fresh, complementary green */
+            --accent-color: #F5A623; /* A warm accent orange */
+            --success-color: #7ED321; /* A clear success green */
+            --warning-color: #F8E71C; /* A visible warning yellow */
+            --danger-color: #D0021B; /* A strong danger red */
+            --light-color: #F9FAFB; /* Very light background */
+            --dark-color: #333333; /* Darker text for contrast */
+            --gray-color: #9B9B9B; /* Muted gray for secondary text */
+            --sidebar-bg: #FFFFFF;
+            --sidebar-text: #333333;
+            --sidebar-hover-bg: #f1f5f9;
+            --sidebar-active-bg: #eef5ff;
+            --sidebar-active-text: var(--primary-color);
+            --border-color: #E0E0E0;
+            --card-bg: #FFFFFF;
+            --text-light: #666666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+            overflow: hidden; /* Prevent body scroll */
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -260px; /* Hidden by default */
+            transition: left 0.3s ease;
+            border-right: 1px solid var(--border-color);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+       .sidebar-header {
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px; /* match header height for vertical alignment */
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-top: -20px;
+}
+
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 4px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-menu a:hover {
+            background-color: var(--sidebar-hover-bg);
+            color: var(--dark-color);
+        }
+
+        .sidebar-menu a.active {
+            background-color: var(--sidebar-active-bg);
+            color: var(--sidebar-active-text);
+            font-weight: 600;
+        }
+
+        .sidebar-menu a i {
+            width: 24px;
+            text-align: center;
+            font-size: 16px;
+        }
+        
+        .main-content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            margin-left: 0; /* Default margin for desktop */
+            transition: margin-left 0.3s ease;
+        }
+        
+        .sidebar.active ~ .main-content-wrapper {
+            margin-left: 260px;
+        }
+
+        .header {
+            background-color: var(--card-bg);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 900;
+            border-bottom: 1px solid var(--border-color);
+            height: 70px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--dark-color);
+        }
+
+        .sidebar-toggle .fa-times {
+            display: none;
+        }
+
+        .sidebar.active ~ .main-content-wrapper .sidebar-toggle .fa-bars {
+            display: none;
+        }
+
+        .sidebar.active ~ .main-content-wrapper .sidebar-toggle .fa-times {
+            display: block;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-title i {
+            color: var(--primary-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .user-profile .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            line-height: 1;
+        }
+
+        .user-profile .user-name {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--dark-color);
+            line-height: 1.1;
+        }
+
+        .user-profile .user-meta {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 3px;
+        }
+        
+        .main-content {
+            padding: 30px;
+            flex-grow: 1;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+        }
+
+        .tracking-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr; /* Fixed width for student list, flexible for map */
+            gap: 30px;
+            height: calc(100vh - 70px - 60px); 
+        }
+
+        .student-list-panel, .map-panel {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .panel-header h3 {
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .student-list {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        
+        .student-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .student-item:hover {
+            background-color: var(--sidebar-hover-bg);
+        }
+
+        .student-item.active {
+            background-color: var(--sidebar-active-bg);
+            font-weight: 600;
+        }
+        
+        .student-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .student-info {
+            flex-grow: 1;
+        }
+        
+        .student-name {
+            display: block;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+        
+        .student-meta {
+            display: block;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .track-btn {
+            background-color: #fff;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        
+        /* Normal hover/active behavior (blue) */
+        .student-item.active .track-btn,
+        .track-btn:hover {
+            background-color: var(--primary-color);
+            color: #fff;
+        }
+
+        /* Untracking (Untrack) button should be red and override the blue hover/active styles */
+        .track-btn.untracking {
+            background-color: var(--danger-color);
+            color: #fff;
+            border-color: var(--danger-color);
+        }
+
+        /* Ensure the red state stays red on hover and when inside an active list item */
+        .track-btn.untracking:hover,
+        .student-item.active .track-btn.untracking {
+            background-color: darken(var(--danger-color), 5%); /* fallback will be ignored in browsers that don't support darken() */
+            background-color: #b30014; /* hard-coded slightly darker red for wide support */
+            color: #fff;
+            border-color: #b30014;
+        }
+        
+        .map-placeholder {
+            flex-grow: 1;
+            position: relative;
+            background-color: #e2e8f0;
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+            overflow: hidden;
+        }
+        
+        .map-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(30%);
+        }
+
+        /* Map container should fill the panel */
+        #map {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        #map-message {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 10;
+        }
+        
+        #map-pin {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            transform: translate(-50%, -100%); /* Center horizontally, align tip vertically */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" fill="%23D0021B"><path d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67a24 24 0 01-35.464 0zM192 256c35.346 0 64-28.654 64-64s-28.654-64-64-64-64 28.654-64 64 28.654 64 64 64z"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 50;
+            transition: top 0.5s ease, left 0.5s ease;
+            pointer-events: none; /* Let map interactions pass through */
+        }
+
+        /* Legend displayed above the map panel (not overlay) */
+        .map-legend-panel {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--card-bg);
+        }
+        .map-legend-panel .legend-item { display:flex; align-items:center; gap:8px; color:var(--dark-color); font-size:14px; }
+        .map-legend-panel .legend-icon { width:14px; height:14px; display:inline-block; border-radius:3px; }
+        .map-legend-panel .legend-student { background: #4361ee; }
+        .map-legend-panel .legend-company { background: #F59E0B; }
+
+        /* Marker stacking so student appears above company */
+        .marker-company { z-index: 1000; position: relative; }
+        .marker-student { z-index: 1100; position: relative; }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .tracking-layout {
+                grid-template-columns: 1fr; /* Stack on tablets and mobile */
+                height: auto;
+            }
+            .student-list-panel {
+                max-height: 40vh; /* Limit height of list */
+            }
+            .map-panel {
+                min-height: 50vh;
+            }
+            .sidebar.active ~ .main-content-wrapper {
+                margin-left: 0;
+            }
+        }

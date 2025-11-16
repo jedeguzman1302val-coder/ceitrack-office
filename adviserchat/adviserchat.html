@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adviser Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="adviserchat.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>CEITRACK</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="/adviserdashboard/adviserdashboard.html"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+            <li><a href="/adviserannouncement/adviserannouncement.html"><i class="fas fa-bullhorn"></i><span>Announcements</span></a></li>
+            <li><a href="/adviserstudents/adviserstudents.html"><i class="fas fa-users"></i><span>Students</span></a></li>
+            <li><a href="#" class="active"><i class="fas fa-comments"></i><span>Chat</span></a></li>
+            <li><a href="/advisertrack/advisertrack.html"><i class="fas fa-map-marker-alt"></i><span>Track Student</span></a></li>
+            <li><a href="#"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+        </ul>
+    </div>
+
+    <div class="main-content-wrapper">
+        <div class="header">
+            <div class="header-content">
+                <button type="button" class="sidebar-toggle" aria-controls="sidebar" aria-expanded="false">
+                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-times"></i>
+                </button>
+                <h1 class="header-title">
+                    <i class="fas fa-comments"></i> Chat
+                </h1>
+            </div>
+            <div class="user-profile">
+                <div class="header-actions" style="margin-right: 15px; display: flex; gap: 10px;">
+                    <button id="notification-icon-btn" class="header-icon-btn" title="Notifications" style="background: none; border: none; font-size: 18px; cursor: pointer;">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <img src="https://ui-avatars.com/api/?name=Adviser&background=4361ee&color=fff" alt="User" id="adviser-avatar">
+                <div class="user-info">
+                    <span class="user-name" id="adviser-name">Loading...</span>
+                    <span class="user-meta" id="adviser-meta" style="font-size:12px;color:#6b7280;margin-top:3px;display:block;">&nbsp;</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="chat-container">
+                <div id="chat-list">
+                    <div class="chat-list-header">
+                        <div class="chat-list-header-top">
+                            <h3>Conversations</h3>
+                            <div id="chat-list-status" class="chat-list-status">
+                                <div id="chat-list-dot"></div>
+                                <span id="chat-list-status-text">Offline</span>
+                            </div>
+                        </div>
+                        <div class="tabs">
+                            <button class="tab-link active" data-filter="students">Students</button>
+                            <button class="tab-link" data-filter="chairperson">Chairperson</button>
+                            <button class="tab-link" data-filter="secretary">Secretary</button>
+                        </div>
+                        <div class="filters">
+                            <div class="search-container">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="search-input" placeholder="Search...">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="students-list-container" class="chat-list-content active">
+                        <p id="students-loading" style="padding:20px;text-align:center;color:#6b7280">Loading students...</p>
+                    </div>
+                    <div id="chairperson-list-container" class="chat-list-content">
+                        <div class="chat-item">
+                            <div class="avatar-container"><img src="https://ui-avatars.com/api/?name=Chair+Person&background=random" alt="Chairperson"><div class="status-indicator online"></div></div>
+                            <div class="student-info"><div class="student-name">Mr. Chairperson</div></div>
+                        </div>
+                    </div>
+                    <div id="secretary-list-container" class="chat-list-content">
+                        <p style="padding: 20px; text-align: center; color: var(--gray-color);">No secretary chat yet.</p>
+                    </div>
+                </div>
+
+                <div id="chat-window">
+                    <div class="welcome-message">
+                        <i class="fas fa-comments"></i>
+                        <h3>Adviser Chat</h3>
+                        <p>Select a conversation to start</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="image-viewer-modal" class="image-modal" style="display: none;">
+        <span class="image-modal-close">&times;</span>
+        <img class="image-modal-content" id="modal-image">
+    </div>
+
+    <div id="delete-confirmation-modal" class="confirmation-modal" style="display: none;">
+        <div class="modal-content">
+            <p>Are you sure you want to delete this message?</p>
+            <div class="modal-actions">
+                <button id="confirm-delete-btn" class="btn btn-danger">Yes, Delete</button>
+                <button id="cancel-delete-btn" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+    <script src="adviserchat.js"></script>
+</body>
+</html>

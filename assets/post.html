@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OJT Announcements</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Add TinyMCE from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #e0e7ff;
+            --secondary: #3f37c9;
+            --success: #4ade80;
+            --warning: #f59e0b;
+            --danger: #f43f5e;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #94a3b8;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--dark);
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .sidebar-header:hover::after {
+            content: 'Change Photo';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+        }
+
+        .sidebar-header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .sidebar-header:hover img {
+            opacity: 0.7;
+        }
+
+        #profile-upload {
+            display: none;
+        }
+
+        .user-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-info p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .nav-menu {
+            margin-top: 2rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: white;
+            position: relative;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: white;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .nav-item i {
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+
+        /* Announcements */
+        .announcement-form {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-outline {
+            background-color: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-light);
+        }
+
+        /* Announcement Cards */
+        .announcement-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 1.5rem;
+        }
+
+        .announcement-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .announcement-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .announcement-author {
+            font-weight: 600;
+        }
+
+        .announcement-date {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .announcement-content {
+            margin-bottom: 1rem;
+            white-space: pre-line;
+        }
+
+        .announcement-actions {
+            display: flex;
+            gap: 1rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1rem;
+        }
+
+        .comments-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        .comment-form {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-top: 4px;
+        }
+        .comment-input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius);
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s;
+            resize: none;
+            line-height: 1.5;
+            overflow-y: hidden;
+        }
+        .comment-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        .post-comment-btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            align-self: flex-end;
+            height: fit-content;
+        }
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .comment {
+            display: flex;
+            gap: 1rem;
+        }
+        .comment-content {
+            background-color: #f1f5f9;
+            padding: 0.75rem 1rem;
+            border-radius: var(--border-radius);
+            flex-grow: 1;
+        }
+        .comment-author {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .comment-role-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .comment-role-badge.adviser {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+        .comment-role-badge.student {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .comment-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        .comment-timestamp {
+            font-size: 0.75rem;
+            color: var(--gray);
+            margin-top: 0.5rem;
+        }
+        .no-comments {
+            text-align: center;
+            color: var(--gray);
+            padding: 1rem;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            color: var(--primary);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                height: auto;
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+        .file-upload-container {
+            margin-top: 1.5rem;
+            border: 2px dashed #cbd5e1;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            background-color: #f8fafc;
+        }
+        
+        .file-upload-container:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .file-upload-container.drag-over {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .upload-text {
+            margin-bottom: 1rem;
+        }
+        
+        .upload-text h4 {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+        
+        .upload-text p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .browse-btn {
+            display: inline-block;
+            padding: 0.5rem 1.25rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+        
+        .browse-btn:hover {
+            background-color: var(--secondary);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-preview-container {
+            margin-top: 1.5rem;
+        }
+        
+        .file-preview-item {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 0.75rem;
+        }
+        
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background-color: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .file-info {
+            flex-grow: 1;
+            min-width: 0;
+        }
+        
+        .file-name {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .file-size {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .file-remove {
+            color: var(--danger);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .file-remove:hover {
+            background-color: rgba(244, 63, 94, 0.1);
+        }
+        
+        .supported-formats {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+        
+        /* Attachment display in announcements */
+        .attachment-container {
+            margin-top: 1rem;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .announcement-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: var(--border-radius);
+            display: block;
+        }
+
+        .image-actions {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .download-btn {
+            background-color: rgba(255, 255, 255, 0.9);
+            color: var(--primary);
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .download-btn:hover {
+            background-color: white;
+            transform: scale(1.1);
+        }
+
+        .file-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f1f1f1;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+        }
+
+        .file-card i {
+            font-size: 24px;
+        }
+
+        .file-card a {
+            margin-left: auto;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .image-preview-card {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .image-preview-card:hover .image-actions {
+            opacity: 1;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .file-action {
+            padding: 0.5rem;
+            color: var(--primary);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-action:hover {
+            background-color: var(--primary-light);
+            transform: scale(1.1);
+        }
+
+        .file-preview-card {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            transition: all 0.3s ease;
+        }
+
+        .file-preview-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: white;
+            min-width: 160px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            border-radius: var(--border-radius);
+            z-index: 1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: none;
+            background: none;
+            color: var(--dark);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .dropdown-item.delete-announcement {
+            color: var(--danger);
+        }
+
+        .dropdown-item.delete-announcement:hover {
+            background-color: #fee2e2;
+        }
+
+        /* Edit form styles */
+        .edit-form {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+
+        .edit-form .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .edit-form .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .edit-form .btn-cancel {
+            background-color: #e2e8f0;
+            color: var(--dark);
+        }
+
+        .edit-form .btn-save {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            position: absolute;
+            margin-top: 80px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .delete-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .delete-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin: -8px 0 0 -8px;
+            border: 2px solid rgba(244, 63, 94, 0.3);
+            border-top-color: var(--danger);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: var(--shadow);
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .modal-header i {
+            font-size: 3rem;
+            color: var(--danger);
+            margin-bottom: 1rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-header p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 0.75rem 2rem;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.95rem;
+            min-width: 100px;
+        }
+
+        .modal-btn-cancel {
+            background-color: #e2e8f0;
+            color: var(--dark);
+        }
+
+        .modal-btn-cancel:hover {
+            background-color: #cbd5e1;
+        }
+
+        .modal-btn-delete {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .modal-btn-delete:hover {
+            background-color: #e11d48;
+        }
+
+        .modal-btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .modal-btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin: -10px 0 0 -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Add styles for rich text editor */
+        .tox-tinymce {
+            border-radius: var(--border-radius) !important;
+            border-color: var(--gray) !important;
+        }
+        
+        .tox .tox-toolbar__group {
+            border-color: var(--gray) !important;
+        }
+        
+        .tox .tox-tbtn {
+            color: var(--dark) !important;
+        }
+        
+        .tox .tox-tbtn:hover {
+            background-color: var(--primary-light) !important;
+        }
+        
+        .tox .tox-tbtn--enabled {
+            background-color: var(--primary-light) !important;
+            color: var(--primary) !important;
+        }
+        
+        /* Style for rich text content */
+        .announcement-content {
+            line-height: 1.6;
+        }
+        
+        .announcement-content h1,
+        .announcement-content h2,
+        .announcement-content h3,
+        .announcement-content h4 {
+            margin: 1rem 0;
+            color: var(--dark);
+        }
+        
+        .announcement-content p {
+            margin: 0.5rem 0;
+        }
+        
+        .announcement-content ul,
+        .announcement-content ol {
+            margin: 0.5rem 0;
+            padding-left: 1.5rem;
+        }
+        
+        .announcement-content blockquote {
+            border-left: 4px solid var(--primary);
+            margin: 1rem 0;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-light);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        
+        .announcement-content code {
+            background-color: #f1f5f9;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .announcement-content pre {
+            background-color: #f1f5f9;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            overflow-x: auto;
+        }
+        
+        .announcement-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .announcement-content th,
+        .announcement-content td {
+            border: 1px solid var(--gray);
+            padding: 0.5rem;
+            text-align: left;
+        }
+        
+        .announcement-content th {
+            background-color: var(--primary-light);
+        }
+        
+        .announcement-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            margin: 1rem 0;
+        }
+        
+        .announcement-content a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        .announcement-content a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header" id="profile-header">
+                <img src="https://ui-avatars.com/api/?name=Adviser&background=4361ee&color=fff" alt="Adviser" id="adviser-avatar">
+                <div class="user-info">
+                    <h3 id="adviser-name">Loading...</h3>
+                    <p id="adviser-role">Adviser</p>
+                </div>
+                <input type="file" id="profile-upload" accept="image/*">
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="post.html" class="nav-item active">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </a>
+                <a href="students.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>Students</span>
+                </a>
+                <a href="chat.html" class="nav-item">
+                    <i class="fas fa-comments"></i>
+                    <span>Chat</span>
+                </a>
+                <a href="StudentLoc/index.html" class="nav-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Track Student</span>
+                </a>
+                
+                <a href="login.html" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1>Announcements</h1>
+                <button class="btn btn-primary" id="new-announcement-btn">
+                    <i class="fas fa-plus"></i> New Announcement
+                </button>
+            </div>
+
+            <!-- Announcement Form (hidden by default) -->
+            <div class="announcement-form" id="announcement-form" style="display: none;">
+                <div class="form-group">
+                    <label for="announcement-title">Title</label>
+                    <input type="text" id="announcement-title" placeholder="Enter announcement title">
+                </div>
+                <div class="form-group">
+                    <label for="announcement-content">Content</label>
+                    <textarea id="announcement-content"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Attachment (Optional)</label>
+                    <div class="file-upload-container" id="file-upload-container">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="upload-text">
+                            <h4>Drag & Drop files here</h4>
+                            <p>or</p>
+                        </div>
+                        <div class="browse-btn" id="browse-btn">Browse Files</div>
+                        <input type="file" id="announcement-attachment" class="file-input">
+                        <div class="supported-formats">
+                            Supports: PDF, DOCX, XLSX, JPG, PNG (Max 10MB)
+                        </div>
+                    </div>
+                    <div class="file-preview-container" id="file-preview"></div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-outline" id="cancel-announcement">Cancel</button>
+                    <button class="btn btn-primary" id="post-announcement">Post Announcement</button>
+                </div>
+            </div>
+
+            <!-- Announcements List -->
+            <div class="announcements-list" id="announcements-container">       
+            </div>
+        </main>
+    </div>
+
+    <!-- Download function script -->
+    <script>
+        // Make downloadFile function globally available
+        window.downloadFile = function(url, filename) {
+            try {
+                // Create a temporary link element
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', filename);
+                link.setAttribute('target', '_blank');
+                link.setAttribute('rel', 'noopener noreferrer');
+                
+                // Add to document, click, and remove
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error('Error downloading file:', error);
+                alert('Error downloading file. Please try again.');
+            }
+        };
+    </script>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getFirestore, doc, getDoc, collection, getDocs, addDoc, query, orderBy, limit, serverTimestamp, deleteDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-storage.js';
+
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeTfbcz9-lqT0JTMO8JVTWV-luBhT8kO0",
+            authDomain: "project-6675709483481122019.firebaseapp.com",
+            databaseURL: "https://project-6675709483481122019-default-rtdb.firebaseio.com",
+            projectId: "project-6675709483481122019",
+            storageBucket: "project-6675709483481122019.appspot.com",
+            messagingSenderId: "305985446601",
+            appId: "1:305985446601:web:914f344ff38ac5b177e318"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const storage = getStorage(app);
+
+        // Get logged-in user data
+        const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    
+        // Check if user is an adviser
+        if (currentUser && currentUser.role === 'adviser') {
+            // Set adviser info
+            document.getElementById('adviser-name').textContent = currentUser.name || 'Adviser';
+            document.getElementById('adviser-role').textContent = currentUser.department ? `${currentUser.department} Adviser` : 'Adviser';
+            
+            // Load profile picture
+            loadProfilePicture();
+        } else {
+            alert('You must be logged in as an adviser to view this page.');
+            window.location.href = 'login.html';
+        }
+
+        // Load profile picture
+        async function loadProfilePicture() {
+            try {
+                const profileRef = ref(storage, `advisers/${currentUser.idNumber}/profile`);
+                const url = await getDownloadURL(profileRef);
+                document.getElementById('adviser-avatar').src = url;
+            } catch (error) {
+                console.log('No profile picture found, using default');
+                // Set default avatar with user's name
+                const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=4361ee&color=fff`;
+                document.getElementById('adviser-avatar').src = defaultAvatar;
+            }
+        }
+
+        // Handle profile picture upload
+        document.getElementById('profile-header').addEventListener('click', () => {
+            document.getElementById('profile-upload').click();
+        });
+
+        document.getElementById('profile-upload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Check if file is an image
+            if (!file.type.startsWith('image/')) {
+                alert('Please select an image file');
+                return;
+            }
+
+            // Check file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size should not exceed 5MB');
+                return;
+            }
+
+            try {
+                // Show loading state
+                const avatar = document.getElementById('adviser-avatar');
+                avatar.style.opacity = '0.5';
+
+                // Upload to Firebase Storage
+                const storageRef = ref(storage, `advisers/${currentUser.idNumber}/profile`);
+                await uploadBytes(storageRef, file);
+                
+                // Get download URL
+                const url = await getDownloadURL(storageRef);
+                
+                // Update avatar
+                avatar.src = url;
+                avatar.style.opacity = '1';
+
+                // Update currentUser object with new photo URL
+                currentUser.photoURL = url;
+                sessionStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--success);
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: var(--border-radius);
+                    box-shadow: var(--shadow);
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease-out;
+                `;
+                successMessage.textContent = 'Profile picture updated successfully!';
+                document.body.appendChild(successMessage);
+                setTimeout(() => successMessage.remove(), 3000);
+
+            } catch (error) {
+                console.error('Error uploading profile picture:', error);
+                alert('Failed to upload profile picture. Please try again.');
+            }
+        });
+
+        // DOM Elements for announcements
+        const newAnnouncementBtn = document.getElementById('new-announcement-btn');
+        const announcementForm = document.getElementById('announcement-form');
+        const cancelAnnouncement = document.getElementById('cancel-announcement');
+        const postAnnouncement = document.getElementById('post-announcement');
+        const announcementsContainer = document.getElementById('announcements-container');
+    
+        // Toggle announcement form
+        newAnnouncementBtn.addEventListener('click', () => {
+            announcementForm.style.display = announcementForm.style.display === 'none' ? 'block' : 'none';
+        });
+    
+        cancelAnnouncement.addEventListener('click', () => {
+            announcementForm.style.display = 'none';
+            document.getElementById('announcement-title').value = '';
+            tinymce.get('announcement-content').setContent('');
+            document.getElementById('file-preview').innerHTML = '';
+            document.getElementById('announcement-attachment').value = '';
+        });
+
+        // Initialize TinyMCE
+        tinymce.init({
+            selector: '#announcement-content',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            height: 400,
+            menubar: false,
+            branding: false,
+            promotion: false,
+            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; }',
+            setup: function(editor) {
+                editor.on('change', function() {
+                    editor.save();
+                });
+            }
+        });
+    
+        // Post new announcement
+        postAnnouncement.addEventListener('click', async () => {
+            const title = document.getElementById('announcement-title').value.trim();
+            const content = tinymce.get('announcement-content').getContent();
+            const fileInput = document.getElementById('announcement-attachment');
+            const file = fileInput.files[0];
+            
+            if (!title || !content) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Show loading state
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.className = 'loading-overlay';
+            loadingOverlay.innerHTML = `
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Posting announcement...</div>
+            `;
+            document.body.appendChild(loadingOverlay);
+            
+            // Disable the post button
+            postAnnouncement.classList.add('btn-loading');
+            postAnnouncement.disabled = true;
+
+            try {
+                const department = currentUser.department;
+                const section = currentUser.section;
+
+                if (!section) {
+                    alert('Section is not defined for the current user.');
+                    return;
+                }
+
+                const announcementData = {
+                    title,
+                    content,
+                    adviserName: currentUser.name,
+                    authorId: currentUser.idNumber,
+                    authorPhoto: document.getElementById('adviser-avatar').src,
+                    department,
+                    section,
+                    datePosted: serverTimestamp()
+                };
+
+                let fileURL = '';
+                if (file) {
+                    const storageRef = ref(storage, `announcements/${department}/${section}/${file.name}`);
+                    await uploadBytes(storageRef, file);
+                    fileURL = await getDownloadURL(storageRef);
+                    announcementData.attachmentURL = fileURL;
+                }
+
+                // Add to announcements collection with department and section structure
+                const announcementsRef = collection(db, `announcements/${department}/${section}`);
+                const docRef = await addDoc(announcementsRef, announcementData);
+                console.log('Announcement posted with ID:', docRef.id);
+
+                // Save activity to adviser's activities collection
+                const activityRef = collection(db, 'advisers', currentUser.idNumber, 'activities');
+                const activityData = {
+                    type: 'announcement',
+                    title: 'New Announcement',
+                    description: title,
+                    timestamp: serverTimestamp()
+                };
+                await addDoc(activityRef, activityData);
+                console.log('Activity saved for adviser:', currentUser.idNumber);
+
+                // Reset form
+                document.getElementById('announcement-title').value = '';
+                tinymce.get('announcement-content').setContent('');
+                document.getElementById('file-preview').innerHTML = '';
+                fileInput.value = '';
+                announcementForm.style.display = 'none';
+
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: var(--success);
+                    color: white;
+                    padding: 1rem 2rem;
+                    border-radius: var(--border-radius);
+                    box-shadow: var(--shadow);
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease-out;
+                `;
+                successMessage.textContent = 'Announcement posted successfully!';
+                document.body.appendChild(successMessage);
+                setTimeout(() => successMessage.remove(), 3000);
+
+                // Reload announcements
+                loadAnnouncements();
+
+            } catch (error) {
+                console.error('Error posting announcement:', error);
+                alert('Error posting announcement. Please try again.');
+            } finally {
+                // Remove loading state
+                loadingOverlay.remove();
+                postAnnouncement.classList.remove('btn-loading');
+                postAnnouncement.disabled = false;
+            }
+        });
+
+        // Load announcements from Firestore
+        async function loadAnnouncements() {
+            try {
+                const department = currentUser.department;
+                const section = currentUser.section;
+                
+                console.log('Loading announcements for:', { department, section });
+                
+                // Clear existing announcements
+                announcementsContainer.innerHTML = '';
+                
+                // Get announcements from the new structure
+                const announcementsRef = collection(db, `announcements/${department}/${section}`);
+                const q = query(announcementsRef, orderBy('datePosted', 'desc'));
+                const querySnapshot = await getDocs(q);
+                
+                if (querySnapshot.empty) {
+                    announcementsContainer.innerHTML = '<p class="no-announcements">No announcements yet.</p>';
+                    return;
+                }
+
+                querySnapshot.forEach(doc => {
+                    const announcement = doc.data();
+                    const date = announcement.datePosted?.toDate?.() || new Date();
+                    const fileURL = announcement.attachmentURL || '';
+
+                    let attachmentHTML = '';
+if (fileURL) {
+    const fileExt = fileURL.split('.').pop().toLowerCase().split('?')[0]; // Remove any query parameters
+    const cleanFileName = extractFileName(fileURL);
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
+
+    if (imageExtensions.includes(fileExt)) {
+        // Display image directly with preview
+        attachmentHTML = `
+            <div class="attachment-container">
+                <div class="image-preview-card">
+                    <img src="${fileURL}" alt="${cleanFileName}" class="announcement-image">
+                    <div class="image-actions">
+                        <a href="#" class="download-btn" title="Download Image" 
+                           onclick="event.preventDefault(); downloadFile('${fileURL}', '${cleanFileName}')">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>`;
+    } else {
+        // Display file card with appropriate icon
+        const fileIcon = getFileIcon(fileExt);
+        attachmentHTML = `
+            <div class="attachment-container">
+                <div class="file-preview-card">
+                    <div class="file-icon">
+                        <i class="fas ${fileIcon}"></i>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name">${cleanFileName}</div>
+                        <div class="file-size">${fileExt.toUpperCase()} File</div>
+                    </div>
+                    <div class="file-actions">
+                        <a href="#" class="file-action" title="Download File" 
+                           onclick="event.preventDefault(); downloadFile('${fileURL}', '${cleanFileName}')">
+                            <i class="fas fa-download"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>`;
+    }
+}
+
+                    const announcementCard = document.createElement('div');
+                    announcementCard.className = 'announcement-card';
+                    announcementCard.setAttribute('data-announcement-id', doc.id);
+                    const adviserAvatarUrl = document.getElementById('adviser-avatar').src;
+
+                    announcementCard.innerHTML = `
+                        <div class="announcement-header">
+                            <img src="${announcement.authorPhoto || `https://ui-avatars.com/api/?name=${encodeURIComponent(announcement.adviserName)}&background=4361ee&color=fff`}" 
+                                    alt="${announcement.adviserName}" class="announcement-avatar">
+                                <div>
+                                    <div class="announcement-author">${announcement.adviserName}</div>
+                                    <div class="announcement-date">Posted on ${formatDate(date)}</div>
+                                </div>
+                            </div>
+                            <h3>${announcement.title}</h3>
+                            <div class="announcement-content">${announcement.content}</div>
+                            ${attachmentHTML}
+                            <div class="announcement-actions">
+                                <button class="action-btn toggle-comments-btn" data-id="${doc.id}"><i class="fas fa-comment"></i> Comment</button>
+                               
+                                <div class="dropdown">
+                                    <button class="action-btn"><i class="fas fa-ellipsis-h"></i> More</button>
+                                    <div class="dropdown-content">
+                                        <button class="dropdown-item edit-announcement" data-id="${doc.id}">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="dropdown-item delete-announcement" data-id="${doc.id}">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="comments-section" id="comments-section-${doc.id}" style="display: none;">
+                            <div class="comment-form">
+                                <img src="${adviserAvatarUrl}" alt="Your avatar" class="comment-avatar">
+                                <textarea class="comment-input" id="comment-input-${doc.id}" placeholder="Write a comment..." rows="1"></textarea>
+                                <button class="btn btn-primary post-comment-btn" data-id="${doc.id}">Post</button>
+                            </div>
+                            <div class="comments-list" id="comments-list-${doc.id}">
+                                <!-- Comments will be loaded here -->
+                            </div>
+                        </div>
+                        <div class="edit-form" id="edit-form-${doc.id}">
+                            <div class="form-group">
+                                <label for="edit-title-${doc.id}">Title</label>
+                                <input type="text" id="edit-title-${doc.id}" value="${announcement.title}">
+                            </div>
+                            <div class="form-group">
+                                <label for="edit-content-${doc.id}">Content</label>
+                                <textarea id="edit-content-${doc.id}">${announcement.content}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Attachment (Optional)</label>
+                                <div class="file-upload-container" id="edit-file-upload-${doc.id}">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <div class="upload-text">
+                                        <h4>Drag & Drop files here</h4>
+                                        <p>or</p>
+                                    </div>
+                                    <div class="browse-btn" id="edit-browse-btn-${doc.id}">Browse Files</div>
+                                    <input type="file" id="edit-attachment-${doc.id}" class="file-input">
+                                    <div class="supported-formats">
+                                        Supports: PDF, DOCX, XLSX, JPG, PNG (Max 10MB)
+                                    </div>
+                                </div>
+                                <div class="file-preview-container" id="edit-file-preview-${doc.id}">
+                                    ${fileURL ? `
+                                        <div class="file-preview-item">
+                                            <div class="file-icon">
+                                                <i class="fas ${getFileIcon(fileURL.split('.').pop().toLowerCase().split('?')[0])}"></i>
+                                            </div>
+                                            <div class="file-info">
+                                                <div class="file-name">${extractFileName(fileURL)}</div>
+                                                <div class="file-size">${fileURL.split('.').pop().toLowerCase().split('?')[0].toUpperCase()} File</div>
+                                            </div>
+                                            <div class="file-remove" title="Remove file">
+                                                <i class="fas fa-times"></i>
+                                            </div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-outline btn-cancel" data-id="${doc.id}">Cancel</button>
+                                <button class="btn btn-primary btn-save" data-id="${doc.id}">Save Changes</button>
+                            </div>
+                        </div>
+                        `;
+                        announcementsContainer.appendChild(announcementCard);
+
+                    // Initialize TinyMCE for edit form
+                    tinymce.init({
+                        selector: `#edit-content-${doc.id}`,
+                        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                        height: 300,
+                        menubar: false,
+                        branding: false,
+                        promotion: false,
+                        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 14px; }'
+                    });
+    
+                    // Initialize file upload for edit form
+                    const editFileUpload = document.getElementById(`edit-file-upload-${doc.id}`);
+                    const editBrowseBtn = document.getElementById(`edit-browse-btn-${doc.id}`);
+                    const editFileInput = document.getElementById(`edit-attachment-${doc.id}`);
+                    const editFilePreview = document.getElementById(`edit-file-preview-${doc.id}`);
+
+                    editBrowseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                        editFileInput.click();
+            });
+
+                    editFileInput.addEventListener('change', () => handleEditFileSelect(editFileInput, editFilePreview));
+
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                        editFileUpload.addEventListener(eventName, preventDefaults, false);
+                    });
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                        editFileUpload.addEventListener(eventName, () => {
+                            editFileUpload.classList.add('drag-over');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                        editFileUpload.addEventListener(eventName, () => {
+                            editFileUpload.classList.remove('drag-over');
+                }, false);
+            });
+
+                    editFileUpload.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                            editFileInput.files = files;
+                            handleEditFileSelect(editFileInput, editFilePreview);
+                        }
+                    });
+                });
+
+                // Add event listeners for edit and delete buttons
+                document.querySelectorAll('.edit-announcement').forEach(button => {
+                    button.addEventListener('click', handleEdit);
+                });
+
+                document.querySelectorAll('.delete-announcement').forEach(button => {
+                    button.addEventListener('click', handleDelete);
+                });
+
+                document.querySelectorAll('.btn-cancel').forEach(button => {
+                    button.addEventListener('click', handleCancelEdit);
+                });
+
+                document.querySelectorAll('.btn-save').forEach(button => {
+                    button.addEventListener('click', handleSaveEdit);
+                });
+
+                // Add event listeners for comment functionality
+                document.querySelectorAll('.toggle-comments-btn').forEach(button => {
+                    button.addEventListener('click', toggleComments);
+                });
+
+                document.querySelectorAll('.post-comment-btn').forEach(button => {
+                    button.addEventListener('click', postComment);
+                });
+
+                document.querySelectorAll('.comment-input').forEach(textarea => {
+                    textarea.addEventListener('input', autoResizeTextarea);
+                });
+
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+                announcementsContainer.innerHTML = '<p>Error loading announcements. Please refresh the page.</p>';
+            }
+        }
+
+        // Handle edit button click
+        function handleEdit(e) {
+            const announcementId = e.currentTarget.dataset.id;
+            const editForm = document.getElementById(`edit-form-${announcementId}`);
+            editForm.style.display = 'block';
+        }
+
+        // Handle cancel edit
+        function handleCancelEdit(e) {
+            const announcementId = e.currentTarget.dataset.id;
+            const editForm = document.getElementById(`edit-form-${announcementId}`);
+            editForm.style.display = 'none';
+        }
+
+        // Handle save edit
+        async function handleSaveEdit(e) {
+            const announcementId = e.currentTarget.dataset.id;
+            const title = document.getElementById(`edit-title-${announcementId}`).value.trim();
+            const content = tinymce.get(`edit-content-${announcementId}`).getContent();
+            const fileInput = document.getElementById(`edit-attachment-${announcementId}`);
+            const file = fileInput?.files[0];
+
+            if (!title || !content) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // Show loading state
+                    const loadingOverlay = document.createElement('div');
+                    loadingOverlay.className = 'loading-overlay';
+                    loadingOverlay.innerHTML = `
+                        <div class="loading-spinner"></div>
+                <div class="loading-text">Updating announcement...</div>
+                    `;
+                    document.body.appendChild(loadingOverlay);
+                    
+            // Disable the save button
+            const saveBtn = e.currentTarget;
+            saveBtn.classList.add('btn-loading');
+            saveBtn.disabled = true;
+                    
+                    try {
+                        const department = currentUser.department;
+                        const section = currentUser.section;
+                const announcementRef = doc(db, `announcements/${department}/${section}`, announcementId);
+
+                const updateData = {
+                    title,
+                    content,
+                    lastEdited: serverTimestamp()
+                };
+
+                // Handle file upload if new file is selected
+                if (file) {
+                    // Delete old file if exists
+                    const oldDoc = await getDoc(announcementRef);
+                    const oldData = oldDoc.data();
+                    if (oldData.attachmentURL) {
+                        const oldFileRef = ref(storage, oldData.attachmentURL);
+                        await deleteObject(oldFileRef);
+                    }
+
+                    // Upload new file
+                    const storageRef = ref(storage, `announcements/${department}/${section}/${file.name}`);
+                    await uploadBytes(storageRef, file);
+                    const fileURL = await getDownloadURL(storageRef);
+                    updateData.attachmentURL = fileURL;
+                }
+
+                await updateDoc(announcementRef, updateData);
+
+                // Hide edit form
+                const editForm = document.getElementById(`edit-form-${announcementId}`);
+                editForm.style.display = 'none';
+                        
+                        // Show success message
+                        const successMessage = document.createElement('div');
+                        successMessage.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            background: var(--success);
+                            color: white;
+                            padding: 1rem 2rem;
+                            border-radius: var(--border-radius);
+                            box-shadow: var(--shadow);
+                            z-index: 1000;
+                            animation: slideIn 0.3s ease-out;
+                        `;
+                successMessage.textContent = 'Announcement updated successfully!';
+                        document.body.appendChild(successMessage);
+                        setTimeout(() => successMessage.remove(), 3000);
+                        
+                // Reload announcements
+                loadAnnouncements();
+
+                    } catch (error) {
+                console.error('Error updating announcement:', error);
+                alert('Error updating announcement. Please try again.');
+                    } finally {
+                // Remove loading state
+                        loadingOverlay.remove();
+                saveBtn.classList.remove('btn-loading');
+                saveBtn.disabled = false;
+            }
+        }
+
+        // Handle delete
+        async function handleDelete(e) {
+            const announcementId = e.currentTarget.dataset.id;
+            const modal = document.getElementById('delete-modal');
+            const confirmBtn = document.getElementById('confirm-delete');
+            const cancelBtn = document.getElementById('cancel-delete');
+            
+            // Show modal
+            modal.classList.add('active');
+            
+            // Handle confirm delete
+            confirmBtn.onclick = async () => {
+                let loadingOverlay; // Declare outside try block
+                try {
+                    // Show loading state
+                    loadingOverlay = document.createElement('div');
+                loadingOverlay.className = 'loading-overlay';
+                loadingOverlay.innerHTML = `
+                    <div class="loading-spinner"></div>
+                        <div class="loading-text">Deleting announcement...</div>
+                `;
+                document.body.appendChild(loadingOverlay);
+                
+                    // Disable the delete button
+                    confirmBtn.classList.add('modal-btn-loading');
+                    confirmBtn.disabled = true;
+                    
+                    const department = currentUser.department;
+                    const section = currentUser.section;
+                    const announcementRef = doc(db, `announcements/${department}/${section}`, announcementId);
+
+                    // Get the announcement data to check for attachment
+                    const announcementDoc = await getDoc(announcementRef);
+                    const announcementData = announcementDoc.data();
+
+                    // Delete the announcement
+                    await deleteDoc(announcementRef);
+
+                    // If there's an attachment, delete it from storage
+                    if (announcementData.attachmentURL) {
+                        const attachmentRef = ref(storage, announcementData.attachmentURL);
+                        await deleteObject(attachmentRef);
+                    }
+
+                    // Hide modal
+                    modal.classList.remove('active');
+                    
+                    // Show success message
+                    const successMessage = document.createElement('div');
+                    successMessage.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: var(--success);
+                        color: white;
+                        padding: 1rem 2rem;
+                        border-radius: var(--border-radius);
+                        box-shadow: var(--shadow);
+                        z-index: 1000;
+                        animation: slideIn 0.3s ease-out;
+                    `;
+                    successMessage.textContent = 'Announcement deleted successfully!';
+                    document.body.appendChild(successMessage);
+                    setTimeout(() => successMessage.remove(), 3000);
+                    
+                    // Reload announcements
+                    loadAnnouncements();
+                    
+                } catch (error) {
+                    console.error('Error deleting announcement:', error);
+                    alert('Error deleting announcement. Please try again.');
+                } finally {
+                    // Remove loading state
+                    if (loadingOverlay) {
+                    loadingOverlay.remove();
+                    }
+                    confirmBtn.classList.remove('modal-btn-loading');
+                    confirmBtn.disabled = false;
+                }
+            };
+
+            // Handle cancel
+            cancelBtn.onclick = () => {
+                modal.classList.remove('active');
+            };
+        }
+
+        // Helper function to get file icon
+        function getFileIcon(fileType) {
+    const iconMap = {
+        // Documents
+        'pdf': 'fa-file-pdf',
+        'doc': 'fa-file-word',
+        'docx': 'fa-file-word',
+        // Spreadsheets
+        'xls': 'fa-file-excel',
+        'xlsx': 'fa-file-excel',
+        'csv': 'fa-file-csv',
+        // Presentations
+        'ppt': 'fa-file-powerpoint',
+        'pptx': 'fa-file-powerpoint',
+        // Images
+        'jpg': 'fa-file-image',
+        'jpeg': 'fa-file-image',
+        'png': 'fa-file-image',
+        'gif': 'fa-file-image',
+        'webp': 'fa-file-image',
+        'svg': 'fa-file-image',
+        'bmp': 'fa-file-image',
+        // Archives
+        'zip': 'fa-file-archive',
+        'rar': 'fa-file-archive',
+        '7z': 'fa-file-archive',
+        'tar': 'fa-file-archive',
+        'gz': 'fa-file-archive',
+        // Text
+        'txt': 'fa-file-alt',
+        'rtf': 'fa-file-alt',
+        // Code
+        'html': 'fa-file-code',
+        'css': 'fa-file-code',
+        'js': 'fa-file-code',
+        'json': 'fa-file-code',
+        'php': 'fa-file-code',
+        'py': 'fa-file-code',
+        'java': 'fa-file-code',
+        'cpp': 'fa-file-code',
+        'c': 'fa-file-code',
+        'h': 'fa-file-code',
+        'sh': 'fa-file-code',
+        // Audio
+        'mp3': 'fa-file-audio',
+        'wav': 'fa-file-audio',
+        'ogg': 'fa-file-audio',
+        // Video
+        'mp4': 'fa-file-video',
+        'mov': 'fa-file-video',
+        'avi': 'fa-file-video',
+        'mkv': 'fa-file-video',
+        // Default
+        'default': 'fa-file'
+    };
+    
+    return iconMap[fileType.toLowerCase()] || iconMap.default;
+}
+
+        // Helper function to format date
+        function formatDate(date) {
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Initialize file upload
+        const fileUploadContainer = document.getElementById('file-upload-container');
+        const browseBtn = document.getElementById('browse-btn');
+        const fileInput = document.getElementById('announcement-attachment');
+        const filePreview = document.getElementById('file-preview');
+            
+            browseBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                fileInput.click();
+            });
+            
+        fileInput.addEventListener('change', handleFileSelect);
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                fileUploadContainer.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                fileUploadContainer.addEventListener(eventName, () => {
+                    fileUploadContainer.classList.add('drag-over');
+                }, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                fileUploadContainer.addEventListener(eventName, () => {
+                    fileUploadContainer.classList.remove('drag-over');
+                }, false);
+            });
+            
+            fileUploadContainer.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                handleFileSelect();
+                }
+            });
+            
+        function handleFileSelect() {
+                filePreview.innerHTML = '';
+                
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    
+                    if (file.size > 10 * 1024 * 1024) {
+                        showError('File size exceeds 10MB limit. Please choose a smaller file.');
+                    resetFileInput(fileInput, filePreview);
+                        return;
+                    }
+                    
+                    const validTypes = [
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-excel',
+    'application/msword',
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/webp',
+    'image/svg+xml',
+    'image/bmp'
+];
+                    
+                    if (!validTypes.includes(file.type)) {
+                        showError('Please upload a valid file type (PDF, DOCX, XLSX, JPG, PNG).');
+                    resetFileInput(fileInput, filePreview);
+                        return;
+                    }
+                    
+                createFilePreview(file, filePreview);
+            }
+        }
+
+        function resetFileInput(fileInput, previewContainer) {
+                fileInput.value = '';
+            previewContainer.innerHTML = '';
+            }
+            
+            function showError(message) {
+                const errorElement = document.createElement('div');
+                errorElement.className = 'upload-error';
+                errorElement.style.color = 'var(--danger)';
+                errorElement.style.marginTop = '0.5rem';
+                errorElement.style.fontSize = '0.9rem';
+                errorElement.textContent = message;
+                
+                const existingError = fileUploadContainer.querySelector('.upload-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                fileUploadContainer.appendChild(errorElement);
+                
+                setTimeout(() => {
+                    errorElement.remove();
+                }, 5000);
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function createFilePreview(file, previewContainer) {
+            const previewItem = document.createElement('div');
+            previewItem.className = 'file-preview-item';
+            
+            const fileIcon = getFileIcon(file.name.split('.').pop().toLowerCase());
+            
+            previewItem.innerHTML = `
+                <div class="file-icon">
+                    <i class="fas ${fileIcon}"></i>
+                </div>
+                <div class="file-info">
+                    <div class="file-name">${file.name}</div>
+                    <div class="file-size">${formatFileSize(file.size)}</div>
+                </div>
+                <div class="file-remove" title="Remove file">
+                    <i class="fas fa-times"></i>
+                </div>
+            `;
+            
+            const removeBtn = previewItem.querySelector('.file-remove');
+            removeBtn.addEventListener('click', () => {
+                resetFileInput(fileInput, previewContainer);
+            });
+            
+            previewContainer.appendChild(previewItem);
+        }
+
+        // Handle file selection for edit form
+        function handleEditFileSelect(fileInput, previewContainer) {
+            previewContainer.innerHTML = '';
+            
+            if (fileInput.files.length > 0) {
+                const file = fileInput.files[0];
+                
+                if (file.size > 10 * 1024 * 1024) {
+                    showError('File size exceeds 10MB limit. Please choose a smaller file.');
+                    resetFileInput(fileInput, previewContainer);
+                return;
+            }
+
+                const validTypes = [
+                    'application/pdf',
+                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'image/jpeg',
+                    'image/png'
+                ];
+                
+                if (!validTypes.includes(file.type)) {
+                    showError('Please upload a valid file type (PDF, DOCX, XLSX, JPG, PNG).');
+                    resetFileInput(fileInput, previewContainer);
+                return;
+            }
+
+                createFilePreview(file, previewContainer);
+            }
+        }
+
+        // Add this helper function before loadAnnouncements
+        function extractFileName(fileURL) {
+            try {
+                // First decode the URL to handle any URL encoding
+                let decodedURL = decodeURIComponent(fileURL);
+                
+                // Remove query parameters if present
+                decodedURL = decodedURL.split('?')[0];
+                
+                // Split by / and get the last part
+                let parts = decodedURL.split('/');
+                
+                // Get the last part which should be the filename
+                let fileName = parts[parts.length - 1];
+                
+                // If the filename still contains the path, try to get just the filename
+                if (fileName.includes('/')) {
+                    fileName = fileName.split('/').pop();
+                }
+                
+                return fileName;
+            } catch (error) {
+                console.error('Error extracting filename:', error);
+                return 'Unknown File';
+            }
+        }
+
+        // --- COMMENT FUNCTIONALITY START ---
+
+        function autoResizeTextarea(e) {
+            e.target.style.height = 'auto';
+            e.target.style.height = (e.target.scrollHeight) + 'px';
+        }
+        
+        async function toggleComments(e) {
+            const announcementId = e.currentTarget.dataset.id;
+            const commentsSection = document.getElementById(`comments-section-${announcementId}`);
+            
+            const isVisible = commentsSection.style.display === 'block';
+            
+            if (isVisible) {
+                commentsSection.style.display = 'none';
+            } else {
+                commentsSection.style.display = 'block';
+                await loadComments(announcementId);
+            }
+        }
+
+        async function loadComments(announcementId) {
+            const commentsList = document.getElementById(`comments-list-${announcementId}`);
+            commentsList.innerHTML = '<div class="no-comments">Loading comments...</div>';
+
+            try {
+                const department = currentUser.department;
+                const section = currentUser.section;
+                
+                const commentsRef = collection(db, `announcements/${department}/${section}/${announcementId}/comments`);
+                const q = query(commentsRef, orderBy('timestamp', 'asc'));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    commentsList.innerHTML = '<div class="no-comments">No comments yet. Be the first to comment!</div>';
+                    return;
+                }
+
+                commentsList.innerHTML = '';
+                querySnapshot.forEach(doc => {
+                    const comment = doc.data();
+                    const commentDate = comment.timestamp?.toDate?.() || new Date();
+                    
+                    const role = comment.userRole || 'student'; // Default to student
+                    const roleBadge = `<span class="comment-role-badge ${role.toLowerCase()}">${role}</span>`;
+
+                    const commentEl = document.createElement('div');
+                    commentEl.className = 'comment';
+                    commentEl.innerHTML = `
+                        <img src="${comment.userPhoto || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(comment.userName)}&background=random" alt="${comment.userName}" class="comment-avatar">
+                        <div class="comment-content">
+                            <div class="comment-author">${comment.userName} ${roleBadge}</div>
+                            <div class="comment-text">${comment.text}</div>
+                            <div class="comment-timestamp">${formatDate(commentDate)}</div>
+                        </div>
+                    `;
+                    commentsList.appendChild(commentEl);
+                });
+            } catch (error) {
+                console.error('Error loading comments:', error);
+                commentsList.innerHTML = '<div class="no-comments" style="color: var(--danger);">Error loading comments.</div>';
+            }
+        }
+
+        async function postComment(e) {
+            const button = e.currentTarget;
+            const announcementId = button.dataset.id;
+            const input = document.getElementById(`comment-input-${announcementId}`);
+            const commentText = input.value.trim();
+
+            if (!commentText) {
+                return;
+            }
+
+            button.disabled = true;
+            button.classList.add('btn-loading');
+
+            try {
+                const department = currentUser.department;
+                const section = currentUser.section;
+                
+                const commentData = {
+                    text: commentText,
+                    timestamp: serverTimestamp(),
+                    userName: currentUser.name,
+                    userNumber: currentUser.idNumber,
+                    userPhoto: document.getElementById('adviser-avatar').src,
+                    userRole: currentUser.role
+                };
+                
+                const commentsRef = collection(db, `announcements/${department}/${section}/${announcementId}/comments`);
+                await addDoc(commentsRef, commentData);
+
+                input.value = '';
+                input.style.height = 'auto'; // Reset height
+                
+                await loadComments(announcementId);
+
+            } catch (error) {
+                console.error('Error posting comment:', error);
+                alert('Failed to post comment. Please try again.');
+            } finally {
+                button.disabled = false;
+                button.classList.remove('btn-loading');
+            }
+        }
+
+        // --- COMMENT FUNCTIONALITY END ---
+
+        // Load announcements when page loads
+        loadAnnouncements();
+    </script>    
+
+    <!-- Add this right before the closing body tag -->
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Delete Announcement</h3>
+                <p>Are you sure you want to delete this announcement? This action cannot be undone.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" id="cancel-delete">Cancel</button>
+                <button class="modal-btn modal-btn-delete" id="confirm-delete">Delete</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

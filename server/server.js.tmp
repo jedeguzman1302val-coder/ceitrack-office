@@ -1,0 +1,78 @@
+app.post('/api/login', async (req, res) => {
+    const { idNumber, password, role, department } = req.body;
+
+    try {
+        let accountData = null;
+
+        // Validate department selection for chairperson and adviser
+        if ((role === 'chairperson' || role === 'adviser') && !department) {
+            return res.status(400).json({ message: 'Please select a department.' });
+        }
+
+        if (role === 'chairperson') {
+            // Check only in the selected department for chairperson
+            const docRef = db.collection('officers').doc(department).collection('chairperson').doc(idNumber);
+            const doc = await docRef.get();
+            if (doc.exists) {
+                accountData = { ...doc.data(), department };
+            }
+        }
+        else if (role === 'secretary') {
+            // Check only in the selected department for secretary
+            const docRef = db.collection('officers').doc(department).collection('secretary').doc(idNumber);
+            const doc = await docRef.get();
+            if (doc.exists) {
+                accountData = { ...doc.data(), department };
+            }
+        }
+        else if (role === 'adviser') {
+            // Check only in the selected department's sections for adviser
+            const sectionsRef = db.collection('advisers').doc(department).collection('sections');
+            const sectionsSnapshot = await sectionsRef.get();
+            
+            for (const doc of sectionsSnapshot.docs) {
+                const data = doc.data();
+                if (data.idNumber === idNumber) {
+                    accountData = {
+                        ...data,
+                        department: department, // Make sure department is set
+                        section: doc.id
+                    };
+                    break;
+                }
+            }
+        }
+        else {
+            return res.status(400).json({ message: 'Invalid role specified.' });
+        }
+
+        // If no account found in the selected department
+        if (!accountData) {
+            return res.status(404).json({ 
+                message: `Account not found in ${department} department. Please check your ID number and department selection.`
+            });
+        }
+
+        // Validate password
+        if (accountData.password !== password) {
+            return res.status(401).json({ message: 'Incorrect password. Please try again.' });
+        }
+
+        // Double check that the account's department matches the selected department
+        if (accountData.department && accountData.department !== department) {
+            return res.status(401).json({ 
+                message: `This account belongs to ${accountData.department} department, not ${department}.`
+            });
+        }
+
+        // Check position matches role
+        if (accountData.position && accountData.position.toLowerCase() !== role.toLowerCase()) {
+            return res.status(401).json({ message: `This account is not registered as a ${role}.` });
+        }
+
+        res.json(accountData);
+    } catch (error) {
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'An internal server error occurred.' });
+    }
+});

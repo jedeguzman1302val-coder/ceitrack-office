@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | User Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+            --accent-color: #4cc9f0;
+            --success-color: #4ade80;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --gray-color: #64748b;
+            --border-color: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: var(--primary-color);
+            font-size: 24px;
+        }
+        
+        .logo h1 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .dashboard-title i {
+            color: var(--primary-color);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--light-color);
+            font-weight: 600;
+            color: var(--dark-color);
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        
+        tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: rgba(74, 222, 128, 0.1);
+            color: var(--success-color);
+        }
+        
+        .status-inactive {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .btn-outline:hover {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #dc2626;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 1;
+        }
+        
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .modal-header .close-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--gray-color);
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+            font-size: 14px;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+        
+        .info-item {
+            margin-bottom: 15px;
+        }
+        
+        .info-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--gray-color);
+            font-size: 13px;
+        }
+        
+        .info-item span {
+            display: block;
+            font-size: 14px;
+            color: var(--dark-color);
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            position: sticky;
+            bottom: 0;
+            background: white;
+        }
+        
+        .search-filter {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+        
+        .search-box {
+            flex: 1;
+            max-width: 300px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-color);
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: white;
+        }
+        
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--gray-color);
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        
+        .tab:hover:not(.active) {
+            color: var(--dark-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .search-filter {
+                flex-direction: column;
+            }
+            
+            .search-box {
+                max-width: 100%;
+            }
+            
+            .filters {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 10px;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                white-space: nowrap;
+                padding-bottom: 5px;
+            }
+            
+            .modal-content {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                <h1>Admin Dashboard</h1>
+            </div>
+            <div class="user-info">
+                <span>Admin User</span>
+                <img src="https://ui-avatars.com/api/?name=Admin+User&background=4361ee&color=fff" alt="Admin">
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <h1 class="dashboard-title">
+            <i class="fas fa-users-cog"></i> User Accounts Management
+        </h1>
+        
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" data-tab="students" onclick="switchTab('students')">
+                    <i class="fas fa-users"></i> Students
+                </div>
+                <div class="tab" data-tab="officers" onclick="switchTab('officers')">
+                    <i class="fas fa-user-tie"></i> Organization Officers
+                </div>
+                <div class="tab" data-tab="advisers" onclick="switchTab('advisers')">
+                    <i class="fas fa-chalkboard-teacher"></i> Advisers
+                </div>
+            </div>
+            
+            <!-- Students Tab -->
+            <div id="students-tab" class="tab-content active">
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search students..." oninput="searchStudents(this.value)">
+                    </div>
+                    <div class="filters">
+                        <select class="filter-select" onchange="filterStudents('course', this.value)">
+                            <option value="">All Courses</option>
+                            <option>BSIT</option>
+                            <option>BSEE</option>
+                            <option>BSCE</option>
+                        </select>
+                        <select class="filter-select" onchange="filterStudents('section', this.value)">
+                            <option value="">All Sections</option>
+                            <option>A</option>
+                            <option>B</option>
+                            <option>C</option>
+                        </select>
+                        <select class="filter-select" onchange="filterStudents('status', this.value)">
+                            <option value="">Account Status</option>
+                            <option value="with">With Account</option>
+                            <option value="without">Without Account</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Number</th>
+                                <th>Name</th>
+                                <th>Course</th>
+                                <th>Section</th>
+                                <th>Birthday</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTable">
+                            <!-- Student data will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Organization Officers Tab -->
+            <div id="officers-tab" class="tab-content">
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search officers..." oninput="searchOfficers(this.value)">
+                    </div>
+                    <div class="filters">
+                        <select class="filter-select" onchange="filterOfficers('position', this.value)">
+                            <option value="">All Positions</option>
+                            <option>Chairperson</option>
+                            <option>Secretary</option>
+                            <option>Treasurer</option>
+                            <option>Other</option>
+                        </select>   
+                        <select class="filter-select" onchange="filterOfficers('status', this.value)">
+                            <option value="">Account Status</option>
+                            <option value="with">With Account</option>
+                            <option value="without">Without Account</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Number</th>
+                                <th>Name</th>
+                                <th>Position</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="officersTable">
+                            <!-- Officer data will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: right;">
+                    <button class="btn btn-primary" onclick="showOfficerModal()">
+                        <i class="fas fa-user-plus"></i> Add New Officer
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Advisers Tab -->
+            <div id="advisers-tab" class="tab-content">
+                <div class="search-filter">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search advisers..." oninput="searchAdvisers(this.value)">
+                    </div>
+                    <div class="filters">
+                        <select class="filter-select" onchange="filterAdvisers('department', this.value)">
+                            <option value="">Select Department</option>
+                            <option>BSIT</option>
+                            <option>BSEE</option>
+                            <option>BSCE</option>
+                        </select>
+                        <select class="filter-select" onchange="filterAdvisers('status', this.value)">
+                            <option value="">Account Status</option>
+                            <option value="with">With Account</option>
+                            <option value="without">Without Account</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID Number</th>
+                                <th>Name</th>
+                                <th>Department</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="advisersTable">
+                            <!-- Adviser data will be inserted here by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: right;">
+                    <button class="btn btn-primary" onclick="showAdviserModal()">
+                        <i class="fas fa-user-plus"></i> Add New Adviser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Create Student Account Modal -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-plus"></i> Create Student Account</h2>
+                <button class="close-btn" onclick="closeModal('studentModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-item">
+                    <strong>Student Number</strong>
+                    <span id="accountStudentNumber"></span>
+                </div>
+                <div class="info-item">
+                    <strong>Student Name</strong>
+                    <span id="accountStudentName"></span>
+                </div>
+                <div class="info-item">
+                    <strong>Birthday (Default Password)</strong>
+                    <span id="accountBirthday"></span>
+                </div>
+                <div class="form-group">
+                    <label for="accountStudentEmail">Student Email</label>
+                    <input type="email" id="accountStudentEmail" placeholder="student@university.edu" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('studentModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="createStudentAccount()">
+                    <i class="fas fa-save"></i> Create Account
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create Officer Account Modal -->
+    <div id="officerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-tie"></i> Create Officer Account</h2>
+                <button class="close-btn" onclick="closeModal('officerModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="officerIdNumber">ID Number</label>
+                    <input type="text" id="officerIdNumber" placeholder="Enter ID number" required>
+                </div>
+                <div class="form-group">
+                    <label for="officerName">Full Name</label>
+                    <input type="text" id="officerName" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="officerPosition">Position</label>
+                    <select id="officerPosition" required>
+                        <option value="">Select Position</option>
+                        <option value="Chairperson">Chairperson</option>
+                        <option value="Secretary">Secretary</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="officerDepartment">Deparment</label>
+                    <select id="officerDepartment" required>
+                        <option value="">Select Deparment</option>
+                        <option value="BSIT">BSIT</option>
+                        <option value="BSCE">BSCE</option>
+                        <option value="BSEE">BSEE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="officerEmail">Email Address</label>
+                    <input type="email" id="officerEmail" placeholder="officer@university.edu" required>
+                </div>
+                <div class="form-group">
+                    <label for="officerPassword">Password</label>
+                    <input type="text" id="officerPassword" placeholder="Enter password" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('officerModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="createOfficerAccount()">
+                    <i class="fas fa-save"></i> Create Account
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Create Adviser Account Modal -->
+    <div id="adviserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-chalkboard-teacher"></i> Create Adviser Account</h2>
+                <button class="close-btn" onclick="closeModal('adviserModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="adviserIdNumber">ID Number</label>
+                    <input type="text" id="adviserIdNumber" placeholder="Enter ID number" required>
+                </div>
+                <div class="form-group">
+                    <label for="adviserName">Full Name</label>
+                    <input type="text" id="adviserName" placeholder="Enter full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="adviserDepartment">Department</label>
+                    <select id="adviserDepartment" required>
+                        <option value="">Select Department</option>
+                        <option value="BSIT">BSIT</option>
+                        <option value="BSEE">BSEE</option>
+                        <option value="BSCE">BSCE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="adviserSection">Section</label>
+                    <select id="adviserSection" required>
+                        <option value="">Select Section</option>
+                        <option value="4-1">4-1</option>
+                        <option value="4-2">4-2</option>
+                        <option value="4-3">4-3</option>
+                        <option value="4-4">4-4</option>
+                        <option value="4-5">4-5</option>
+                        <option value="4-6">4-6</option>
+                        <option value="4-7">4-7</option>
+                        <option value="4-8">4-8</option>
+                        <option value="4-9">4-9</option>
+                        <option value="4-10">4-10</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="adviserEmail">University Email</label>
+                    <input type="email" id="adviserEmail" placeholder="adviser@university.edu" required>
+                </div>
+                <div class="form-group">
+                    <label for="adviserBirthday">Birthday</label>
+                    <input type="text" id="adviserBirthday" placeholder="MM/DD/YYYY" required>
+                </div>
+                <div class="form-group">
+                    <label for="adviserPassword">Password</label>
+                    <input type="text" id="adviserPassword" placeholder="Enter password" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal('adviserModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="createAdviserAccount()">
+                    <i class="fas fa-save"></i> Create Account
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@latest/dist/email.min.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCeTfbcz9-lqT0JTMO8JVTWV-luBhT8kO0",
+            authDomain: "project-6675709483481122019.firebaseapp.com",
+            databaseURL: "https://project-6675709483481122019-default-rtdb.firebaseio.com",
+            projectId: "project-6675709483481122019",
+            storageBucket: "project-6675709483481122019.appspot.com",
+            messagingSenderId: "305985446601",
+            appId: "1:305985446601:web:914f344ff38ac5b177e318"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        emailjs.init("tWmCVWLqcbPu4IMiZ");
+        
+        // Current active tab
+        let currentTab = 'students';
+        
+        // Switch between tabs
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Update tab UI
+            document.querySelectorAll('.tab').forEach(tab => {
+                if (tab.dataset.tab === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                if (content.id === `${tabName}-tab`) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+            
+            // Load data for the selected tab
+            if (tabName === 'students') {
+                fetchStudents();
+            } else if (tabName === 'officers') {
+                fetchOfficers();
+            } else if (tabName === 'advisers') {
+                fetchAdvisers();
+            }
+        }
+        function fetchStudentsRealtime() {
+    const table = document.getElementById("studentsTable");
+    table.innerHTML = `<tr><td colspan="7">Loading students...</td></tr>`;
+
+    const structure = {
+        BSIT: ['4-1', '4-2'],
+        BSEE: ['4-1'],
+        BSCE: ['4-1', '4-2']
+    };
+
+    const unsubscribeFunctions = [];
+
+    // Clear table before populating
+    table.innerHTML = "";
+
+    for (const [course, sections] of Object.entries(structure)) {
+        for (const section of sections) {
+            const sectionRef = db.collection(`students/${course}/${section}`);
+
+            const unsubscribe = sectionRef.onSnapshot(snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    const studentData = change.doc.data();
+                    const studentNumber = studentData.studentNumber || change.doc.id;
+                    const rowId = `student-row-${studentNumber}`;
+                    const safeName = (studentData.name || "").replace(/'/g, "\\'");
+
+                    if (change.type === "added" || change.type === "modified") {
+                        const existingRow = document.getElementById(rowId);
+                        const row = document.createElement("tr");
+                        row.id = rowId;
+                        row.innerHTML = `
+                            <td>${studentNumber}</td>
+                            <td>${studentData.name}</td>
+                            <td>${studentData.course || course}</td>
+                            <td>${studentData.section || section}</td>
+                            <td>${studentData.birthday}</td>
+                            <td id="student-status-${studentNumber}">
+                                <span class="status-badge status-inactive">No Account</span>
+                            </td>
+                            <td id="student-action-${studentNumber}">
+                                <button class="btn btn-primary btn-sm" onclick="showStudentModal('${studentNumber}', '${safeName}', '${studentData.birthday}')">
+                                    <i class="fas fa-user-plus"></i> Create Account
+                                </button>
+                            </td>
+                        `;
+
+                        if (existingRow) {
+                            table.replaceChild(row, existingRow);
+                        } else {
+                            table.appendChild(row);
+                        }
+
+                        db.collection("student_accounts").doc(studentNumber).onSnapshot((accountDoc) => {
+  const statusCell = document.getElementById(`student-status-${studentNumber}`);
+  const actionCell = document.getElementById(`student-action-${studentNumber}`);
+
+  if (accountDoc.exists && accountDoc.data().accountCreated === true) {
+    statusCell.innerHTML = '<span class="status-badge status-active">Account Exists</span>';
+    actionCell.innerHTML = `
+      <button class="btn btn-outline btn-sm" disabled>
+        <i class="fas fa-check"></i> Account Created
+      </button>
+    `;
+  } else {
+    statusCell.innerHTML = '<span class="status-badge status-inactive">No Account</span>';
+    actionCell.innerHTML = `
+      <button class="btn btn-primary btn-sm" onclick="showStudentModal('${studentNumber}', '${safeName}', '${studentData.birthday}')">
+        <i class="fas fa-user-plus"></i> Create Account
+      </button>
+    `;
+  }
+});
+
+                    }
+
+                    if (change.type === "removed") {
+                        const row = document.getElementById(rowId);
+                        if (row) row.remove();
+                    }
+                });
+            }, error => {
+                console.error(`Error in real-time listener for ${course}/${section}:`, error);
+                table.innerHTML = `<tr><td colspan="7" style="color:red;">Error loading students.</td></tr>`;
+            });
+
+            unsubscribeFunctions.push(unsubscribe);
+        }
+    }
+
+    // Optional: return unsubscribe handler if you want to stop the listener later
+    return () => unsubscribeFunctions.forEach(unsub => unsub());
+}
+
+
+        function searchStudents(query) {
+            const rows = document.querySelectorAll("#studentsTable tr");
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(query.toLowerCase())) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+        
+        function filterStudents(filterType, value) {
+            const rows = document.querySelectorAll("#studentsTable tr");
+            rows.forEach(row => {
+                if (value === "") {
+                    row.style.display = "";
+                    return;
+                }
+                
+                if (filterType === 'status') {
+                    const statusCell = row.querySelector("td:nth-child(6)");
+                    if (statusCell) {
+                        const statusText = statusCell.textContent.toLowerCase();
+                        if ((value === 'with' && statusText.includes('exists')) || 
+                            (value === 'without' && statusText.includes('no account'))) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    }
+                } else {
+                    const cellIndex = filterType === 'course' ? 2 : 3;
+                    const cell = row.querySelector(`td:nth-child(${cellIndex + 1})`);
+                    if (cell && cell.textContent.toLowerCase().includes(value.toLowerCase())) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+            });
+        }
+        
+        function showStudentModal(studentNumber, studentName, birthday) {
+            document.getElementById("accountStudentNumber").innerText = studentNumber;
+            document.getElementById("accountStudentName").innerText = studentName;
+            document.getElementById("accountBirthday").innerText = birthday;
+            document.getElementById("accountStudentEmail").value = "";
+            document.getElementById("studentModal").classList.add("active");
+        }
+        async function createStudentAccount() {
+    let studentNumber = document.getElementById("accountStudentNumber").innerText;
+    let studentName = document.getElementById("accountStudentName").innerText;
+    let birthday = document.getElementById("accountBirthday").innerText;
+    let studentEmail = document.getElementById("accountStudentEmail").value;
+
+    if (!studentEmail || !studentEmail.includes("@")) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+
+    const createBtn = document.querySelector('#studentModal .modal-footer .btn-primary');
+    createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+    createBtn.disabled = true;
+
+    const structure = {
+        BSIT: ['4-1', '4-2'],
+        BSEE: ['4-1'],
+        BSCE: ['4-1', '4-2']
+    };
+
+    let studentFound = false;
+
+    try {
+        // Search all course/sections
+        for (const [course, sections] of Object.entries(structure)) {
+            for (const section of sections) {
+                const studentRef = db.collection(`students/${course}/${section}`).doc(studentNumber);
+                const studentDoc = await studentRef.get();
+
+                if (studentDoc.exists) {
+                    studentFound = true;
+
+                    await db.collection("student_accounts").doc(studentNumber).set({
+                        studentName: studentName,
+                        studentNumber: studentNumber,
+                        password: birthday,
+                        email: studentEmail,
+                        role: "student",
+                        accountCreated: true, // ✅ Mark the account as created!
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    try {
+                        await emailjs.send("service_vks42tb", "template_rc0pewn", {
+                            student_name: studentName,
+                            student_number: studentNumber,
+                            password: birthday,
+                            to_email: studentEmail
+                        });
+                        console.log("Account creation email sent successfully");
+                    } catch (emailError) {
+                        console.error("Email send error:", emailError);
+                    }
+
+                    alert(`Account successfully created for ${studentName}\nCredentials sent to ${studentEmail}`);
+                    closeModal('studentModal');
+                    break;
+                }
+            }
+
+            if (studentFound) break;
+        }
+
+        if (!studentFound) {
+            alert("Error: This student is not enrolled and cannot have an account.");
+        }
+    } catch (error) {
+        console.error("Error creating account:", error);
+        alert("An error occurred while creating the account. Please try again.");
+    }
+
+    // Reset button state
+    createBtn.innerHTML = '<i class="fas fa-save"></i> Create Account';
+    createBtn.disabled = false;
+}
+
+        
+        // OFFICERS MANAGEMENT
+        function fetchOfficers() {
+            db.collection("officers").onSnapshot(snapshot => {
+                let table = document.getElementById("officersTable");
+                table.innerHTML = ""; 
+
+                snapshot.forEach(doc => {
+                    let officer = doc.data();
+                    let officerId = officer.idNumber;
+
+                    let row = document.createElement("tr");
+                    row.id = `officer-row-${officerId}`;
+                    
+                    // Create initial row content
+                    row.innerHTML = `
+                        <td>${officerId}</td>
+                        <td>${officer.name}</td>
+                        <td>${officer.position}</td>
+                        <td id="officer-status-${officerId}">
+                            <span class="status-badge status-inactive">No Account</span>
+                        </td>
+                        <td id="officer-action-${officerId}">
+                            <button class="btn btn-primary btn-sm" onclick="showOfficerAccountModal('${officerId}', '${officer.name.replace(/'/g, "\\'")}', '${officer.position.replace(/'/g, "\\'")}')">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                        </td>
+                    `;
+                    table.appendChild(row);
+
+                    // Check account status
+                    db.collection("officer_accounts").doc(officerId).onSnapshot(accountDoc => {
+                        let actionCell = document.getElementById(`officer-action-${officerId}`);
+                        let statusCell = document.getElementById(`officer-status-${officerId}`);
+                        
+                        if (accountDoc.exists) {
+                            // Officer has account
+                            statusCell.innerHTML = '<span class="status-badge status-active">Account Exists</span>';
+                            actionCell.innerHTML = `
+                                <button class="btn btn-outline btn-sm" disabled>
+                                    <i class="fas fa-check"></i> Account Created
+                                </button>
+                            `;
+                        }
+                    }, error => {
+                        console.error("Error checking account status:", error);
+                        document.getElementById(`officer-action-${officerId}`).innerHTML = `
+                            <span style="color: var(--danger-color)">Error checking status</span>
+                        `;
+                    });
+                });
+            }, error => {
+                console.error("Error fetching officers:", error);
+                officersTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--danger-color); padding: 20px;">
+                            <i class="fas fa-exclamation-triangle"></i> Error loading officer data. Please try again.
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        
+        function searchOfficers(query) {
+            const rows = document.querySelectorAll("#officersTable tr");
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(query.toLowerCase())) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+        
+        function filterOfficers(filterType, value) {
+            const rows = document.querySelectorAll("#officersTable tr");
+            rows.forEach(row => {
+                if (value === "") {
+                    row.style.display = "";
+                    return;
+                }
+                
+                if (filterType === 'status') {
+                    const statusCell = row.querySelector("td:nth-child(4)");
+                    if (statusCell) {
+                        const statusText = statusCell.textContent.toLowerCase();
+                        if ((value === 'with' && statusText.includes('exists')) || 
+                            (value === 'without' && statusText.includes('no account'))) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    }
+                } else {
+                    const cell = row.querySelector(`td:nth-child(3)`);
+                    if (cell && cell.textContent.toLowerCase().includes(value.toLowerCase())) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+            });
+        }
+        
+        function showOfficerModal() {
+    // Clear form fields
+    document.getElementById("officerIdNumber").value = "";
+    document.getElementById("officerName").value = "";
+    document.getElementById("officerPosition").value = "";
+    document.getElementById("officerEmail").value = "";
+    document.getElementById("officerPassword").value = generatePassword();
+    document.getElementById("officerDepartment").value = ""; // Clear department dropdown
+
+    document.getElementById("officerModal").classList.add("active");
+}
+
+function showOfficerAccountModal(idNumber, name, position, department = "") {
+    document.getElementById("officerIdNumber").value = idNumber;
+    document.getElementById("officerName").value = name;
+    document.getElementById("officerPosition").value = position;
+    document.getElementById("officerEmail").value = "";
+    document.getElementById("officerPassword").value = generatePassword();
+    document.getElementById("officerDepartment").value = department;
+
+    document.getElementById("officerModal").classList.add("active");
+}
+
+        
+async function createOfficerAccount() {
+    let idNumber = document.getElementById("officerIdNumber").value;
+    let name = document.getElementById("officerName").value;
+    let position = document.getElementById("officerPosition").value;
+    let email = document.getElementById("officerEmail").value;
+    let password = document.getElementById("officerPassword").value;
+    let department = document.getElementById("officerDepartment").value;
+
+    if (!idNumber || !name || !position || !email || !password || !department) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    if (!email.includes("@")) {
+        alert("Please enter a valid email address.");
+        return;
+    }
+
+    let createBtn = document.querySelector('#officerModal .modal-footer .btn-primary');
+    createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+    createBtn.disabled = true;
+
+    try {
+        // Always add/update officer info in 'officers' collection
+        await db.collection("officers").doc(idNumber).set({
+            idNumber: idNumber,
+            name: name,
+            position: position,
+            department: department,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Create officer account
+        await db.collection("officer_accounts").doc(idNumber).set({
+            idNumber: idNumber,
+            name: name,
+            position: position,
+            email: email,
+            password: password,
+            department: department,
+            role: "officer",
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // Send email
+        try {
+            await emailjs.send("service_vks42tb", "template_rc0pewn", {
+                student_name: name,
+                student_number: idNumber,
+                password: password,
+                to_email: email
+            });
+            console.log("Account creation email sent successfully");
+        } catch (emailError) {
+            console.error("Email send error:", emailError);
+        }
+
+        alert(`Account successfully created for ${name}\nCredentials sent to ${email}`);
+        closeModal('officerModal');
+    } catch (error) {
+        console.error("Error creating account:", error);
+        alert("An error occurred while creating the account. Please try again.");
+    } finally {
+        // Reset button
+        createBtn.innerHTML = '<i class="fas fa-save"></i> Create Account';
+        createBtn.disabled = false;
+    }
+}
+
+        // ADVISERS MANAGEMENT
+        function fetchAdvisers() {
+            db.collection("advisers").onSnapshot(snapshot => {
+                let table = document.getElementById("advisersTable");
+                table.innerHTML = ""; 
+
+                snapshot.forEach(doc => {
+                    let adviser = doc.data();
+                    let adviserId = adviser.idNumber;
+
+                    let row = document.createElement("tr");
+                    row.id = `adviser-row-${adviserId}`;
+                    
+                    // Create initial row content
+                    row.innerHTML = `
+                        <td>${adviserId}</td>
+                        <td>${adviser.name}</td>
+                        <td>${adviser.department}</td>
+                        <td id="adviser-status-${adviserId}">
+                            <span class="status-badge status-inactive">No Account</span>
+                        </td>
+                        <td id="adviser-action-${adviserId}">
+                            <button class="btn btn-primary btn-sm" onclick="showAdviserAccountModal('${adviserId}', '${adviser.name.replace(/'/g, "\\'")}', '${adviser.department.replace(/'/g, "\\'")}, ${adviser.section}')">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                        </td>
+                    `;
+                    table.appendChild(row);
+
+                    // Check account status
+                    db.collection("adviser_accounts").doc(adviserId).onSnapshot(accountDoc => {
+                        let actionCell = document.getElementById(`adviser-action-${adviserId}`);
+                        let statusCell = document.getElementById(`adviser-status-${adviserId}`);
+                        
+                        if (accountDoc.exists) {
+                            // Adviser has account
+                            statusCell.innerHTML = '<span class="status-badge status-active">Account Exists</span>';
+                            actionCell.innerHTML = `
+                                <button class="btn btn-outline btn-sm" disabled>
+                                    <i class="fas fa-check"></i> Account Created
+                                </button>
+                            `;
+                        }
+                    }, error => {
+                        console.error("Error checking account status:", error);
+                        document.getElementById(`adviser-action-${adviserId}`).innerHTML = `
+                            <span style="color: var(--danger-color)">Error checking status</span>
+                        `;
+                    });
+                });
+            }, error => {
+                console.error("Error fetching advisers:", error);
+                advisersTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--danger-color); padding: 20px;">
+                            <i class="fas fa-exclamation-triangle"></i> Error loading adviser data. Please try again.
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        
+        function searchAdvisers(query) {
+            const rows = document.querySelectorAll("#advisersTable tr");
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(query.toLowerCase())) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+        
+        function filterAdvisers(filterType, value) {
+            const rows = document.querySelectorAll("#advisersTable tr");
+            rows.forEach(row => {
+                if (value === "") {
+                    row.style.display = "";
+                    return;
+                }
+                
+                if (filterType === 'status') {
+                    const statusCell = row.querySelector("td:nth-child(4)");
+                    if (statusCell) {
+                        const statusText = statusCell.textContent.toLowerCase();
+                        if ((value === 'with' && statusText.includes('exists')) || 
+                            (value === 'without' && statusText.includes('no account'))) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    }
+                } else {
+                    const cell = row.querySelector(`td:nth-child(3)`);
+                    if (cell && cell.textContent.toLowerCase().includes(value.toLowerCase())) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+            });
+        }
+        
+        function showAdviserModal() {
+            // Clear form
+            document.getElementById("adviserIdNumber").value = "";
+            document.getElementById("adviserName").value = "";
+            document.getElementById("adviserDepartment").value = "";
+            document.getElementById("adviserSection").value = "";
+            document.getElementById("adviserEmail").value = "";
+            document.getElementById("adviserPassword").value = generatePassword();
+            
+            document.getElementById("adviserModal").classList.add("active");
+        }
+        
+        function showAdviserAccountModal(idNumber, name, department, section) {
+            document.getElementById("adviserIdNumber").value = idNumber;
+            document.getElementById("adviserName").value = name;
+            document.getElementById("adviserDepartment").value = department;
+            document.getElementById("adviserSection").value = section;
+            document.getElementById("adviserEmail").value = "";
+            document.getElementById("adviserPassword").value = generatePassword();
+            
+            document.getElementById("adviserModal").classList.add("active");
+        }
+        
+        async function createAdviserAccount() {
+            let idNumber = document.getElementById("adviserIdNumber").value;
+            let name = document.getElementById("adviserName").value;
+            let department = document.getElementById("adviserDepartment").value;
+            let section = document.getElementById("adviserSection").value;
+            let univEmail = document.getElementById("adviserEmail").value; // Changed to univEmail
+            let birthday = document.getElementById("adviserBirthday").value; // New: Get birthday
+            let password = document.getElementById("adviserPassword").value;
+            
+            if (!idNumber || !name || !department || !univEmail || !password || !birthday) { // Updated validation
+                alert("Please fill in all fields.");
+                return;
+            }
+            
+            if (!univEmail.includes("@")) {
+                alert("Please enter a valid university email address.");
+                return;
+            }
+            
+            try {
+                // Show loading state
+                let createBtn = document.querySelector('#adviserModal .modal-footer .btn-primary');
+                createBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+                createBtn.disabled = true;
+                
+                // First check if adviser exists in advisers collection
+                let adviserDoc = await db.collection("advisers").doc(idNumber).get();
+                if (!adviserDoc.exists) {
+                    // If not, add to advisers collection
+                    await db.collection("advisers").doc(idNumber).set({
+                        idNumber: idNumber,
+                        name: name,
+                        department: department,
+                        section: section,
+                        birthday: birthday, // New: Add birthday
+                        univEmail: univEmail, // New: Add university email
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                
+                // Create account
+                await db.collection("adviser_accounts").doc(idNumber).set({
+                    name: name,
+                    idNumber: idNumber,
+                    password: password,
+                    email: univEmail, // Changed to univEmail
+                    department: department,
+                    section: section,
+                    birthday: birthday, // New: Add birthday
+                    univEmail: univEmail, // New: Add university email
+                    role: "Adviser",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                // Send email
+                try {
+                    await emailjs.send("service_vks42tb", "template_rc0pewn", {
+                        student_name: name,
+                        student_number: idNumber,
+                        password: password,
+                        to_email: univEmail  // Changed to univEmail
+                    });
+                    console.log("Account creation email sent successfully");
+                } catch (emailError) {
+                    console.error("Email send error:", emailError);
+                    // Don't fail the whole operation if email fails
+                }
+                
+                // Show success message
+                alert(`Account successfully created for ${name}\nCredentials sent to ${univEmail}`); // Updated alert
+                
+                closeModal('adviserModal');
+            } catch (error) {
+                console.error("Error creating account:", error);
+                alert("An error occurred while creating the account. Please try again.");
+                
+                // Reset button state
+                let createBtn = document.querySelector('#adviserModal .modal-footer .btn-primary');
+                createBtn.innerHTML = '<i class="fas fa-save"></i> Create Account';
+                createBtn.disabled = false;
+            }
+        }
+        
+        // HELPER FUNCTIONS
+        function generatePassword() {
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let password = "";
+            for (let i = 0; i < 8; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove("active");
+        }
+        
+        // Close modals when clicking outside content
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener("click", function(e) {
+                if (e.target === this) {
+                    this.classList.remove("active");
+                }
+            });
+        });
+        
+        // Initialize when page loads
+        window.onload = function() {
+            fetchStudentsRealtime();
+            
+            // Set up event listeners for all modals
+            document.querySelectorAll('.modal .close-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.modal').classList.remove('active');
+                });
+            });
+        };
+    </script>
+</body>
+</html>

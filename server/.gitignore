@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Firebase Admin SDK Keys (CRITICAL - DO NOT COMMIT)
+*.json
+project-*.json
+*firebase-adminsdk*.json
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Generated documents
+generated_documents/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

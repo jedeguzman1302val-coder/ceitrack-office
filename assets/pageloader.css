@@ -1,0 +1,135 @@
+/* ========== CEITrack Page Loader - Minimal & Clean Design ========== */
+
+/* Hide body scrollbar when loader is active */
+body.loading {
+    overflow: hidden;
+}
+
+.ceitrack-page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 1;
+    transition: opacity 0.4s ease-out;
+    overflow: hidden;
+}
+
+.ceitrack-page-loader.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* Typing Text Container */
+.loader-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.loader-typing-text {
+    font-size: 3.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    color: #000000;
+}
+
+.loader-typing-text .char {
+    opacity: 0;
+    display: inline-block;
+    animation: fadeInChar 0.2s ease-in forwards;
+    color: #000000;
+}
+
+.loader-typing-text .char.yellow {
+    color: #fbbf24;
+}
+
+.loader-typing-text .char.blue {
+    color: #4f46e5;
+}
+
+.loader-typing-text .char.red {
+    color: #ef4444;
+}
+
+.loader-typing-text .pin-icon {
+    height: 4.5rem;
+    width: auto;
+    margin: 0 0.1rem;
+    vertical-align: middle;
+}
+
+@keyframes fadeInChar {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.loader-typing-text .cursor {
+    display: none;
+}
+
+/* Loading Animation - Maps GIF */
+.loader-animation {
+    margin-top: 0;
+}
+
+.loader-animation img {
+    width: 200px;
+    height: auto;
+    display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .loader-typing-text {
+        font-size: 2.5rem;
+    }
+
+    .loader-typing-text .pin-icon {
+        height: 3rem;
+    }
+
+    .loader-typing-text .cursor {
+        height: 28px;
+    }
+}
+
+@media (max-width: 576px) {
+    .loader-typing-text {
+        font-size: 2.2rem;
+    }
+
+    .loader-typing-text .pin-icon {
+        height: 2.8rem;
+    }
+
+    .loader-typing-text .cursor {
+        height: 24px;
+    }
+}

@@ -1,0 +1,354 @@
+/* ============================================
+   Professional Modal Styles - Clean & Minimal
+   ============================================ */
+
+/* Modal Backdrop */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1103;
+    animation: fadeIn 0.2s ease-out;
+}
+
+/* Modal Content Container */
+.modal-content {
+    background-color: #ffffff;
+    margin: 3vh auto;
+    padding: 0;
+    width: 90%;
+    max-width: 900px;
+    border-radius: 16px;
+    position: relative;
+    max-height: 94vh;
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 
+                0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    z-index: 1104;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
+}
+
+/* Modal Header */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 32px;
+    border-bottom: 1px solid #e5e7eb;
+    background: linear-gradient(to bottom, #ffffff 0%, #f9fafb 100%);
+    flex-shrink: 0;
+}
+
+.modal-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    letter-spacing: -0.01em;
+}
+
+.submission-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    color: #6b7280;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.submission-date i {
+    color: #4A90E2;
+    font-size: 14px;
+}
+
+/* Close Button */
+.close {
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #9ca3af;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.close:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+/* Modal Body - Scrollable Area */
+.requirement-details {
+    padding: 28px 32px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+/* Custom Scrollbar */
+.requirement-details::-webkit-scrollbar {
+    width: 8px;
+}
+
+.requirement-details::-webkit-scrollbar-track {
+    background: #f9fafb;
+}
+
+.requirement-details::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+.requirement-details::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* Section Container */
+.section-container {
+    margin-bottom: 24px;
+}
+
+.section-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.requirement-description {
+    background: #f9fafb;
+    padding: 16px;
+    border-radius: 8px;
+    color: #4b5563;
+    font-size: 15px;
+    line-height: 1.7;
+    border: 1px solid #e5e7eb;
+}
+
+/* Status Indicator */
+.status-indicator {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.status-indicator.approved {
+    background-color: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #047857;
+}
+
+.status-indicator.rejected {
+    background-color: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #b91c1c;
+}
+
+.status-indicator i {
+    font-size: 16px;
+}
+
+/* Image Container */
+.requirement-image-container {
+    margin: 24px 0;
+    text-align: center;
+    background: #f9fafb;
+    padding: 24px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+}
+
+#requirementImage {
+    max-width: 100%;
+    height: auto;
+    max-height: 500px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    object-fit: contain;
+}
+
+/* Feedback Section */
+.feedback-section {
+    margin: 24px 0 0 0;
+}
+
+.feedback-section label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.feedback-section textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 110px;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.feedback-section textarea:focus {
+    outline: none;
+    border-color: #4A90E2;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    padding: 20px 32px;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb;
+    flex-shrink: 0;
+}
+
+.action-buttons button {
+    padding: 11px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 110px;
+    justify-content: center;
+}
+
+.approve-btn {
+    background-color: #10b981;
+    color: white;
+}
+
+.approve-btn:hover {
+    background-color: #059669;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+}
+
+.approve-btn:active {
+    transform: scale(0.98);
+}
+
+.reject-btn {
+    background-color: #ef4444;
+    color: white;
+}
+
+.reject-btn:hover {
+    background-color: #dc2626;
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
+}
+
+.reject-btn:active {
+    transform: scale(0.98);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 2vh auto;
+        max-height: 96vh;
+        border-radius: 12px;
+    }
+
+    .modal-header {
+        padding: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .modal-title {
+        font-size: 20px;
+        padding-right: 32px;
+    }
+
+    .submission-date {
+        margin-left: 0;
+        font-size: 12px;
+    }
+
+    .close {
+        right: 16px;
+        top: 20px;
+    }
+
+    .requirement-details {
+        padding: 20px;
+    }
+
+    .requirement-image-container {
+        padding: 16px;
+    }
+
+    #requirementImage {
+        max-height: 350px;
+    }
+
+    .action-buttons {
+        padding: 16px 20px;
+        flex-direction: column-reverse;
+    }
+
+    .action-buttons button {
+        width: 100%;
+    }
+}

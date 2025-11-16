@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chairperson Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="chairdash.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>CEITRACK</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li>
+                <a href="chairdash.html" class="active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairannouncement/chairannounce.html">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairpersonaddstudent/addStudent.html">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Add Student</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairpersonaddadviser/addAdviser.html">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Add Adviser</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairpersondocument/chairpersondocuments.html">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Student Documents</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairpersonstudentstatus/chairpersonstudentstatus.html">
+                    <i class="fas fa-users"></i>
+                    <span>Student Status</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chairpersonstudenthte/studenthte.html">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Student HTE</span>
+                </a>
+            </li>
+            <li>
+                <a href="/chatchairperson/chatchair.html">
+                    <i class="fas fa-comments"></i>
+                    <span>Message</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content-wrapper">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <button class="sidebar-toggle">
+                    <i class="fas fa-bars"></i>
+                    <i class="fas fa-times"></i>
+                </button>
+                <h1 class="header-title">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Chairperson Dashboards
+                </h1>
+            </div>
+            <div class="user-profile">
+                <img src="https://ui-avatars.com/api/?name=Chair+Person&background=3f37c9&color=fff" alt="User">
+                <div class="user-info">
+                    <span class="user-name" id="header-username">Chairperson</span>
+                    <span class="user-role">Department <span id="chairdepartment"></span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="dashboard-layout">
+                <div class="main-column">
+                    <!-- Stats Cards -->
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Students</h3>
+                                <h2 id="total-students">0</h2>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-handshake"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Total Companies with MOU</h3>
+                                <h2 id="total-companies-mou">0</h2>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-building-lock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Blocked Companies</h3>
+                                <h2 id="blocked-companies">0</h2>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Pending Company Approvals</h3>
+                                <h2 id="pending-approvals">0</h3>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Completed OJTs</h3>
+                                <h2 id="completed-ojts">0</h2>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Starting Students</h3>
+                                <h2 id="starting-students">0</h2>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-user-minus"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Pullout Students</h3>
+                                <h2 id="pullout-students">0</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- side-column removed so main-column occupies full width -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Details Modal -->
+   
+    <!-- (Announcement functionality removed) -->
+
+    <script src="chairdash.js" type="module"></script>
